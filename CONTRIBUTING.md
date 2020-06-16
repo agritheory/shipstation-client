@@ -3,7 +3,7 @@
 ## Dependencies
 
 We use `poetry` to manage the [dependencies](https://github.com/python-poetry/poetry).
-If you dont have `poetry` installed, you should run the command below.
+If you don't have `poetry` installed, you should run the command below.
 
 ```bash
 make download-poetry
@@ -17,7 +17,7 @@ make install
 
 To activate your `virtualenv` run `poetry shell`.
 
-## Codestyle
+## Code Style
 
 After you run `make install` you can execute the automatic code formatting.
 
