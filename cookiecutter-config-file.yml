@@ -1,0 +1,10 @@
+# THis file contains values from Cookiecutter
+
+default_context:
+  project_name: "shipstation-client"
+  project_description: "Awesome `shipstation-client` is a Python cli/package created with https://github.com/TezRomacH/python-package-template"
+  organization: "AgriTheory"
+  license: "MIT"
+  version: "0.1.0"
+  github_name: "agritheory"
+  email: "hello@agritheory.com"
