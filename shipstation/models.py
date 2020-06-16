@@ -1,3 +1,4 @@
+import json
 import typing
 from datetime import date, datetime
 from decimal import Decimal
@@ -53,7 +54,7 @@ class ShipStationInsuranceOptions(ShipStationBase):
 
 @attrs(auto_attribs=True)
 class ShipStationInternationalOptions(ShipStationBase):
-    customs_items: typing.Optional[typing.Sequence] = None
+    customs_items: typing.Optional[typing.Sequence[typing.Any]] = None
     contents: typing.Optional[str] = None
     non_delivery: typing.Optional[str] = None
 
@@ -95,11 +96,13 @@ class ShipStationContainer(ShipStationBase):
     _weight: typing.Optional[ShipStationWeight] = None
 
     @property
-    def weight(self):
-        return self._weight if self._weight.value else None
+    def weight(self) -> typing.Optional[ShipStationWeight]:
+        if self._weight:
+            return self._weight if self._weight.value else None
+        return None
 
     @weight.setter
-    def weight(self, val):
+    def weight(self, val: ShipStationWeight) -> None:
         self.require_type(val, ShipStationWeight)
         self._weight = ShipStationWeight(**val)
 
@@ -299,7 +302,7 @@ class ShipStationWebhook(ShipStationBase):
     resource_type: typing.Optional[str] = None
 
     # this doesn't use the typical .json() method so as to not convert it to camel case
-    def prepare(self):
+    def prepare(self) -> str:
         return json.dumps(
             {
                 "target_url": self.target_url,
