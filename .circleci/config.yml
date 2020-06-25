@@ -1,21 +1,26 @@
-version: 2.1
-
-orbs:
-  python: circleci/python@0.2.1
-
+version: 2
 jobs:
-  build-and-test:
-    executor: python/default
+  build:
+    working_directory: ~/project
+    docker:
+      - image: circleci/python:3.6
     steps:
       - checkout
-      - python/load-cache
-      - python/install-deps
-      - python/save-cache
+      - restore_cache:
+          keys:
+            - deps-{{ checksum "poetry.lock" }}
       - run:
-          command: ./manage.py test
-          name: Test
-
-workflows:
-  main:
-    jobs:
-      - build-and-test
+          name: Install Dependencies
+          command: |
+            sudo pip install poetry
+            poetry install
+      - save_cache:
+          key: deps-{{ checksum "poetry.lock" }}
+          paths:
+            - /home/circleci/.cache/pypoetry/virtualenvs
+      - run:
+          name: Lint using Black
+          command: poetry run black --check .
+      - run:
+          name: Run Tests
+          command: poetry run pytest -s --mypy shipstation --cov=shipstation

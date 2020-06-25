@@ -2,6 +2,7 @@ import json
 import typing
 from datetime import date, datetime
 from decimal import Decimal
+from uuid import UUID
 
 from attr import attrib, attrs
 
@@ -26,6 +27,8 @@ __all__ = [
     "ShipStationOrderTag",
     "ShipStationProductCategory",
     "ShipStationProductTag",
+    "ShipStationRate",
+    "ShipStationRateOptions",
     "ShipStationStatusMapping",
     "ShipStationStore",
     "ShipStationUser",
@@ -54,7 +57,7 @@ class ShipStationInsuranceOptions(ShipStationBase):
 
 @attrs(auto_attribs=True)
 class ShipStationInternationalOptions(ShipStationBase):
-    customs_items: typing.Optional[typing.Sequence[typing.Any]] = None
+    customs_items: typing.Optional[typing.List[ShipStationCustomsItem]] = None
     contents: typing.Optional[str] = None
     non_delivery: typing.Optional[str] = None
 
@@ -316,7 +319,7 @@ class ShipStationWebhook(ShipStationBase):
 @attrs(auto_attribs=True)
 class ShipStationUser(ShipStationBase):
     name: typing.Optional[str] = None
-    user_id: typing.Optional[str] = None
+    user_id: typing.Optional[UUID] = None
     user_name: typing.Optional[str] = None
 
 
@@ -333,7 +336,7 @@ class ShipStationMarketplace(ShipStationBase):
 @attrs(auto_attribs=True)
 class ShipStationMarketplaceUsername(ShipStationBase):
     create_date: typing.Optional[date] = None
-    customer_id: typing.Optional[str] = None
+    customer_id: typing.Optional[int] = None
     customer_user_id: typing.Optional[str] = None
     marketplace: typing.Optional[str] = None
     marketplace_id: typing.Optional[str] = None
@@ -348,7 +351,7 @@ class ShipStationCustomer(ShipStationBase):
     company: typing.Optional[str] = None
     country_code: typing.Optional[str] = None
     create_date: typing.Optional[date] = None
-    customer_id: typing.Optional[str] = None
+    customer_id: typing.Optional[int] = None
     email: typing.Optional[str] = None
     marketplace_usernames: typing.Optional[
         typing.Sequence[ShipStationMarketplaceUsername]
@@ -398,7 +401,7 @@ class ShipStationFulfillment(ShipStationBase):
     fulfillment_id: typing.Optional[str] = None
     order_id: typing.Optional[str] = None
     order_number: typing.Optional[str] = None
-    user_id: typing.Optional[str] = None
+    user_id: typing.Optional[UUID] = None
     customer_email: typing.Optional[str] = None
     tracking_number: typing.Optional[str] = None
     create_date: typing.Optional[datetime] = None
@@ -414,3 +417,27 @@ class ShipStationFulfillment(ShipStationBase):
     marketplace_notified: typing.Optional[bool] = None
     notify_error_message: typing.Optional[str] = None
     ship_to: typing.Optional[ShipStationAddress] = None
+
+
+@attrs(auto_attribs=True)
+class ShipStationRateOptions(ShipStationBase):
+    carrier_code: typing.Optional[str] = None
+    service_code: typing.Optional[str] = None
+    package_code: typing.Optional[str] = None
+    from_postal_code: typing.Optional[str] = None
+    to_state: typing.Optional[str] = None
+    to_country: typing.Optional[str] = None
+    to_postal_code: typing.Optional[str] = None
+    to_city: typing.Optional[str] = None
+    weight: typing.Optional[ShipStationWeight] = None
+    dimensions: typing.Optional[ShipStationContainer] = None
+    confirmation: typing.Optional[str] = None
+    residential: typing.Optional[bool] = None
+
+
+@attrs(auto_attribs=True)
+class ShipStationRate(ShipStationBase):
+    other_cost: typing.Optional[Decimal] = None
+    service_code: typing.Optional[str] = None
+    service_name: typing.Optional[str] = None
+    shipment_cost: typing.Optional[Decimal] = None

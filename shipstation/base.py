@@ -3,6 +3,7 @@ import re
 import typing
 from datetime import date, datetime
 from decimal import Decimal
+from uuid import UUID
 
 import cattr
 from dateutil import parser
@@ -85,18 +86,19 @@ class ShipStationBase:
     def _validate_parameters(
         self, parameters: typing.Any, valid_parameters: typing.Any
     ) -> typing.Dict[str, typing.Any]:
-        self.require_type(parameters, dict)
         return {self.to_camel_case(key): value for key, value in parameters.items()}
 
     def json(
         self, json_str: typing.Union[None, str, typing.Dict[str, typing.Any]] = None
-    ) -> typing.Union[typing.Any, ShipStationBase]:
+    ) -> typing.Union[typing.Any, "ShipStationBase"]:
         if not json_str:
             return json.dumps(self.convert_snake_case(self._unstructure()))
         if isinstance(json_str, dict):
             return self._structure(self.convert_camel_case(json_str))
         return self._structure(
-            json.loads(json_str, object_hook=self.convert_camel_case)
+            json.loads(
+                json_str, object_hook=self.convert_camel_case, parse_float=Decimal
+            )
         )
 
     def _unstructure(self) -> typing.Any:
@@ -105,14 +107,16 @@ class ShipStationBase:
         )
         conv.register_unstructure_hook(Decimal, lambda d: str(d))
         conv.register_unstructure_hook(datetime, lambda d: d.isoformat())
+        conv.register_unstructure_hook(UUID, lambda d: str(d))
         # might need a date to datetime conversion hook
         return conv.unstructure(self)
 
-    def _structure(self, converted_json: typing.Iterable[typing.Any]) -> typing.Any:
+    def _structure(self, json_input: typing.Iterable[typing.Any]) -> typing.Any:
         conv = cattr.Converter(  # type: ignore
             unstruct_strat=cattr.UnstructureStrategy.AS_DICT
         )
         conv.register_structure_hook(Decimal, lambda d, t: Decimal(d))
         conv.register_structure_hook(datetime, lambda dt, t: parser.parse(dt))
         conv.register_structure_hook(date, lambda dt, t: parser.parse(dt))
-        return conv.structure(converted_json, type(self))
+        conv.register_structure_hook(UUID, lambda d, t: UUID(d))
+        return conv.structure(json_input, type(self))
