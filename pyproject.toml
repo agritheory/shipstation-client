@@ -38,7 +38,7 @@ attrs = "^19.3.0"
 cattrs = "^1.0.0"
 python-dateutil = "^2.8.1"
 importlib_metadata = {version = "^1.6.0", python = "<3.8"}
-pre-commit = "^2.4.0"
+
 
 [tool.poetry.dev-dependencies]
 darglint = "^1.4.0"
@@ -54,6 +54,9 @@ pydocstyle = "^5.0.2"
 pytest-asyncio = "^0.12.0"
 python-dotenv = "^0.13.0"
 pytest-cov = "^2.10.0"
+pytest-httpx = "^0.4.0"
+pre-commit = "^2.4.0"
+respx = "^0.11.1"
 
 [tool.black]
 line-length = 88

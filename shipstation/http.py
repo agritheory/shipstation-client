@@ -1,4 +1,4 @@
-import pprint
+import json
 import typing
 
 import httpx
@@ -31,7 +31,9 @@ class ShipStationHTTP(ShipStationBase):
     def auth(self) -> AuthTypes:
         return tuple([self.key, self.secret])  # type: ignore
 
-    def get(self, payload: QueryParamTypes, endpoint: str = "") -> httpx.Response:
+    def get(
+        self, payload: QueryParamTypes = None, endpoint: str = ""
+    ) -> httpx.Response:
         r = httpx.get(
             url=f"{self.url}{endpoint}",
             auth=self.auth,
@@ -39,11 +41,11 @@ class ShipStationHTTP(ShipStationBase):
             timeout=self.timeout,
         )
         if self.debug:
-            pprint.PrettyPrinter(indent=4).pprint(f"GET {self.url}{endpoint}")
-            pprint.PrettyPrinter(indent=4).pprint(r.json())
+            print(f"GET {self.url}{endpoint}")
+            print(json.dumps(r.json(), indent=4, sort_keys=True))
         return r
 
-    def post(self, data: RequestData, endpoint: str = "") -> httpx.Response:
+    def post(self, data: RequestData = None, endpoint: str = "") -> httpx.Response:
         r = httpx.post(
             url=f"{self.url}{endpoint}",
             auth=self.auth,
@@ -52,10 +54,11 @@ class ShipStationHTTP(ShipStationBase):
             timeout=self.timeout,
         )
         if self.debug:
-            pprint.PrettyPrinter(indent=4).pprint(r.json())
+            print(f"POST {self.url}{endpoint}")
+            print(json.dumps(r.json(), indent=4, sort_keys=True))
         return r
 
-    def put(self, data: RequestData, endpoint: str = "") -> httpx.Response:
+    def put(self, data: RequestData = None, endpoint: str = "") -> httpx.Response:
         r = httpx.put(
             url=f"{self.url}{endpoint}",
             auth=self.auth,
@@ -64,11 +67,13 @@ class ShipStationHTTP(ShipStationBase):
             timeout=self.timeout,
         )
         if self.debug:
-            pprint.PrettyPrinter(indent=4).pprint(f" PUT {self.url}{endpoint}")
-            pprint.PrettyPrinter(indent=4).pprint(r.json())
+            print(f" PUT {self.url}{endpoint}")
+            print(json.dumps(r.json(), indent=4, sort_keys=True))
         return r
 
-    def delete(self, payload: QueryParamTypes, endpoint: str = "") -> httpx.Response:
+    def delete(
+        self, payload: QueryParamTypes = None, endpoint: str = ""
+    ) -> httpx.Response:
         r = httpx.delete(
             url=f"{self.url}{endpoint}",
             auth=self.auth,
@@ -76,6 +81,6 @@ class ShipStationHTTP(ShipStationBase):
             timeout=self.timeout,
         )
         if self.debug:
-            pprint.PrettyPrinter(indent=4).pprint(f" DELETE {self.url}{endpoint}")
-            pprint.PrettyPrinter(indent=4).pprint(r)
+            print(f" DELETE {self.url}{endpoint}")
+            print(json.dumps(r.json(), indent=4, sort_keys=True))
         return r

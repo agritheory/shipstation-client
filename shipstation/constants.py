@@ -165,7 +165,6 @@ GET_RATE_OPTIONS = (
 REQUIRED_RATE_OPTIONS = (
     "carrier_code",
     "from_postal_code",
-    "to_state",
     "to_country",
     "to_postal_code",
     "weight",
