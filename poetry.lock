@@ -32,9 +32,9 @@ python-versions = ">=3.5"
 version = "0.13.0"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Atomic file writes."
-marker = "sys_platform == \"win32\""
+marker = "python_version >= \"3.5\" and sys_platform == \"win32\" or sys_platform == \"win32\""
 name = "atomicwrites"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
@@ -136,9 +136,9 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 version = "7.1.2"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Cross-platform colored terminal text."
-marker = "platform_system == \"Windows\" or sys_platform == \"win32\""
+marker = "python_version >= \"3.5\" and sys_platform == \"win32\" or platform_system == \"Windows\" or sys_platform == \"win32\""
 name = "colorama"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
@@ -200,7 +200,7 @@ toml = "*"
 pipenv = ["pipenv"]
 
 [[package]]
-category = "dev"
+category = "main"
 description = "A platform independent file lock."
 name = "filelock"
 optional = false
@@ -334,7 +334,7 @@ version = "0.14"
 [[package]]
 category = "main"
 description = "Read metadata from Python packages"
-marker = "python_version < \"3.8\""
+marker = "python_version >= \"3.5\" and python_version < \"3.8\" or python_version < \"3.8\""
 name = "importlib-metadata"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
@@ -404,7 +404,7 @@ python-versions = "*"
 version = "0.6.1"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "More routines for operating on iterables, beyond itertools"
 name = "more-itertools"
 optional = false
@@ -412,7 +412,7 @@ python-versions = ">=3.5"
 version = "8.4.0"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Optional static typing for Python"
 name = "mypy"
 optional = false
@@ -428,7 +428,7 @@ typing-extensions = ">=3.7.4"
 dmypy = ["psutil (>=4.0)"]
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Experimental type system extensions for programs checked with the mypy typechecker."
 name = "mypy-extensions"
 optional = false
@@ -444,7 +444,7 @@ python-versions = "*"
 version = "1.4.0"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Core utilities for Python packages"
 name = "packaging"
 optional = false
@@ -472,7 +472,7 @@ python-versions = "*"
 version = "5.4.5"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "plugin and hook calling mechanisms for python"
 name = "pluggy"
 optional = false
@@ -512,7 +512,7 @@ python = "<3.7"
 version = "*"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "library with cross-python path, ini-parsing, io, code, log facilities"
 name = "py"
 optional = false
@@ -546,7 +546,7 @@ mccabe = ">=0.6,<0.7"
 toml = ">=0.7.1"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Python parsing module"
 name = "pyparsing"
 optional = false
@@ -554,7 +554,7 @@ python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 version = "2.4.7"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "pytest: simple powerful testing with Python"
 name = "pytest"
 optional = false
@@ -622,6 +622,29 @@ pytest = ">=5.4,<6"
 
 [package.extras]
 testing = ["pytest-asyncio (>=0.12.0,<0.13.0)", "pytest-cov (>=2.0.0,<3.0.0)"]
+
+[[package]]
+category = "main"
+description = "Mypy static type checker plugin for Pytest"
+name = "pytest-mypy"
+optional = false
+python-versions = "~=3.4"
+version = "0.6.2"
+
+[package.dependencies]
+filelock = ">=3.0"
+
+[[package.dependencies.mypy]]
+python = ">=3.5,<3.8"
+version = ">=0.500"
+
+[[package.dependencies.mypy]]
+python = ">=3.8"
+version = ">=0.700"
+
+[package.dependencies.pytest]
+python = ">=3.5"
+version = ">=3.5"
 
 [[package]]
 category = "main"
@@ -793,7 +816,7 @@ python-versions = "*"
 version = "0.10.1"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "a fork of Python 2 and 3 ast modules with type comment support"
 name = "typed-ast"
 optional = false
@@ -801,7 +824,7 @@ python-versions = "*"
 version = "1.4.1"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Backported and Experimental Type Hints for Python 3.5+"
 name = "typing-extensions"
 optional = false
@@ -848,7 +871,7 @@ docs = ["sphinx (>=3)", "sphinx-argparse (>=0.2.5)", "sphinx-rtd-theme (>=0.4.3)
 testing = ["pytest (>=4)", "coverage (>=5)", "coverage-enable-subprocess (>=1)", "pytest-xdist (>=1.31.0)", "pytest-mock (>=2)", "pytest-env (>=0.6.2)", "pytest-randomly (>=1)", "pytest-timeout (>=1)", "pytest-freezegun (>=0.4.1)", "flaky (>=3)", "packaging (>=20.0)", "xonsh (>=0.9.16)"]
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Measures the displayed width of unicode strings in a terminal"
 name = "wcwidth"
 optional = false
@@ -866,7 +889,7 @@ version = "1.12.1"
 [[package]]
 category = "main"
 description = "Backport of pathlib-compatible object wrapper for zip files"
-marker = "python_version < \"3.8\""
+marker = "python_version >= \"3.5\" and python_version < \"3.8\" or python_version < \"3.8\""
 name = "zipp"
 optional = false
 python-versions = ">=3.6"
@@ -877,7 +900,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "1484b7b3659eb068a190e363cbf9bc1ea9736a660f379020519dde848d8fbacf"
+content-hash = "f58f2e6c2d2cc0bf2639b7270f1f6e9a02335e1eeaf64a5e1d758822cb3c3615"
 python-versions = "^3.6.1"
 
 [metadata.files]
@@ -1158,6 +1181,10 @@ pytest-cov = [
 pytest-httpx = [
     {file = "pytest_httpx-0.4.0-py3-none-any.whl", hash = "sha256:aa83b5234b50d33f1f7ab65f8cdcc8fddca183eaf2b6465d99c56dc043cabee0"},
     {file = "pytest_httpx-0.4.0.tar.gz", hash = "sha256:03594abd33d0f3b3c8b2adfb3b2f2e4306c3ad5c4232fbc46e26040effed8320"},
+]
+pytest-mypy = [
+    {file = "pytest-mypy-0.6.2.tar.gz", hash = "sha256:2560a9b27d59bb17810d12ec3402dfc7c8e100e40539a70d2814bcbb27240f27"},
+    {file = "pytest_mypy-0.6.2-py3-none-any.whl", hash = "sha256:76e705cfd3800bf2b534738e792245ac5bb8d780698d0f8cd6c79032cc5e9923"},
 ]
 python-dateutil = [
     {file = "python-dateutil-2.8.1.tar.gz", hash = "sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c"},

@@ -23,4 +23,4 @@ jobs:
           command: poetry run black --check .
       - run:
           name: Run Tests
-          command: poetry run pytest -s --mypy shipstation --cov=edgewise --profile
+          command: poetry run pytest -s --mypy shipstation --cov=shipstation

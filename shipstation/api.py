@@ -21,9 +21,7 @@ class ShipStation(ShipStationHTTP):
     orders: typing.Optional[typing.List[typing.Union[str, ShipStationBase]]] = None
 
     def list_tags(self) -> typing.List[typing.Union[str, ShipStationBase, None]]:
-        tags = self.get(
-            endpoint="/accounts/listtags"  # type: ignore
-        )
+        tags = self.get(endpoint="/accounts/listtags")
         return [
             ShipStationOrderTag().json(tag) for tag in tags.json(parse_float=Decimal)
         ]
@@ -61,11 +59,11 @@ class ShipStation(ShipStationHTTP):
         return [ShipStationOrder().json(r) for r in orders]
 
     def get_order(self, order_id: str) -> typing.Union[str, ShipStationBase, None]:
-        r = self.get(endpoint=f"/orders/{order_id}")  # type: ignore
+        r = self.get(endpoint=f"/orders/{order_id}")
         return ShipStationOrder().json(r.text)
 
     def delete_order(self, order_id: str) -> typing.Any:
-        msg = self.delete(endpoint=f"/orders/{order_id}")  # type: ignore
+        msg = self.delete(endpoint=f"/orders/{order_id}")
         return msg.json(parse_float=Decimal)
 
     def add_tag_to_order(self, order_id: str, tag_id: str) -> typing.Any:
@@ -80,12 +78,10 @@ class ShipStation(ShipStationHTTP):
 
     def create_label_for_order(
         self, order: ShipStationOrder, test_label: bool = False, pdf: bool = False
-    ) -> typing.Union[bytes, typing.Any, ShipStationOrder, None]:
+    ) -> typing.Union[bytes, typing.Any, ShipStationBase, None]:
         setattr(order, "test_label", True) if test_label else False
         label_data = order.json()
-        r = self.post(
-            endpoint="/orders/createlabelfororder", data=label_data  # type: ignore
-        )
+        r = self.post(endpoint="/orders/createlabelfororder", data=label_data)
         if not r.status_code == 200:
             return r.json()
         new_data = self.convert_camel_case(r.json())
@@ -147,11 +143,11 @@ class ShipStation(ShipStationHTTP):
         pass
 
     def get_product(self, product_id: str) -> typing.Union[str, ShipStationBase, None]:
-        r = self.get(endpoint=f"/products/{product_id}")  # type: ignore
+        r = self.get(endpoint=f"/products/{product_id}")
         return ShipStationItem().json(r.text)
 
     def list_products(self) -> typing.List[typing.Union[str, ShipStationBase, None]]:
-        r = self.get(endpoint="/products")  # type: ignore
+        r = self.get(endpoint="/products")
         products = (
             r.json(parse_float=Decimal).get("products")
             if r.status_code == 200
@@ -166,7 +162,7 @@ class ShipStation(ShipStationHTTP):
         return msg.json(parse_float=Decimal)
 
     def list_carriers(self) -> typing.List[typing.Union[str, ShipStationBase, None]]:
-        carriers = self.get(endpoint="/carriers")  # type: ignore
+        carriers = self.get(endpoint="/carriers")
         return [
             ShipStationCarrier().json(carrier)
             for carrier in carriers.json(parse_float=Decimal)
@@ -177,7 +173,7 @@ class ShipStation(ShipStationHTTP):
         carrier = self.get(
             endpoint="/carriers/getcarrier", payload={"carrierCode": carrier_code}
         )
-        return ShipStationCarrier().json(carrier.text)
+        return ShipStationCarrier().json(carrier.text)  # type: ignore
 
     def list_packages(
         self, carrier_code: str
@@ -204,7 +200,7 @@ class ShipStation(ShipStationHTTP):
     def get_customer(
         self, customer_id: str
     ) -> typing.Union[str, ShipStationBase, None]:
-        customer = self.get(endpoint=f"/customers/{customer_id}")  # type: ignore
+        customer = self.get(endpoint=f"/customers/{customer_id}")
         return ShipStationCustomer().json(customer.text)
 
     def list_customers(
@@ -261,7 +257,7 @@ class ShipStation(ShipStationHTTP):
         return self.post(endpoint="/shipments/voidlabel", data=shipment_id)
 
     def list_marketplaces(self):
-        marketplaces = self.get(endpoint="/stores/marketplaces")  # type: ignore
+        marketplaces = self.get(endpoint="/stores/marketplaces")
         return [
             ShipStationMarketplace().json(m)
             for m in marketplaces.json(parse_float=Decimal)
@@ -284,7 +280,7 @@ class ShipStation(ShipStationHTTP):
         ]
 
     def get_store(self, store_id: str) -> typing.Union[str, ShipStationBase, None]:
-        store = self.get(endpoint=f"/stores/{store_id}")  # type: ignore
+        store = self.get(endpoint=f"/stores/{store_id}")
         return ShipStationStore().json(store.json(parse_float=Decimal))
 
     def update_store(
@@ -326,11 +322,11 @@ class ShipStation(ShipStationHTTP):
     def get_warehouse(
         self, warehouse_id: str
     ) -> typing.Optional[typing.Union[str, ShipStationBase]]:
-        wh = self.get(endpoint=f"/warehouses/{warehouse_id}")  # type: ignore
+        wh = self.get(endpoint=f"/warehouses/{warehouse_id}")
         return ShipStationWarehouse().json(wh.json(parse_float=Decimal))
 
     def list_warehouses(self) -> typing.List[typing.Union[str, ShipStationBase]]:
-        warehouses = self.get(endpoint="/warehouses")  # type: ignore
+        warehouses = self.get(endpoint="/warehouses")
         return [
             ShipStationWarehouse().json(wh)
             for wh in warehouses.json(parse_float=Decimal)
@@ -345,7 +341,7 @@ class ShipStation(ShipStationHTTP):
         return ShipStationWarehouse().json(wh.json(parse_float=Decimal))
 
     def delete_warehouse(self, warehouse_id: str) -> typing.Any:
-        msg = self.delete(endpoint=f"/warehouses/{warehouse_id}")  # type: ignore
+        msg = self.delete(endpoint=f"/warehouses/{warehouse_id}")
         return msg.json(parse_float=Decimal)
 
     def update_warehouse(self, warehouse: ShipStationWarehouse) -> typing.Any:
@@ -355,7 +351,7 @@ class ShipStation(ShipStationHTTP):
         return msg.json(parse_float=Decimal)
 
     def list_webhooks(self) -> typing.List[typing.Union[str, ShipStationBase]]:
-        r = self.get(endpoint="/webhooks")  # type: ignore
+        r = self.get(endpoint="/webhooks")
         webhooks = (
             r.json(parse_float=Decimal).get("webhooks")
             if r.status_code == 200
@@ -364,7 +360,7 @@ class ShipStation(ShipStationHTTP):
         return [ShipStationWebhook().json(w) for w in webhooks if w]
 
     def unsubscribe_to_webhook(self, webhook_id: str) -> typing.Any:
-        msg = self.delete(endpoint=f"/webhooks/{webhook_id}")  # type: ignore
+        msg = self.delete(endpoint=f"/webhooks/{webhook_id}")
         return msg.json(parse_float=Decimal)
 
     # return same webhook object with new webhook id
