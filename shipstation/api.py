@@ -204,9 +204,7 @@ class ShipStation(ShipStationHTTP):
         customer = self.get(endpoint=f"/customers/{customer_id}")
         return ShipStationCustomer().json(customer.text)
 
-    def list_customers(
-        self, parameters: typing.Any = {}
-    ) -> typing.List[typing.Union[str, ShipStationBase, None]]:
+    def list_customers(self, parameters: typing.Any = {}) -> Page:
         valid_parameters = self._validate_parameters(
             parameters, CUSTOMER_LIST_PARAMETERS
         )
@@ -216,9 +214,7 @@ class ShipStation(ShipStationHTTP):
             call=(self.get, {"endpoint": "/customers", "payload": valid_parameters}),
         )
 
-    def list_fulfillments(
-        self, parameters: typing.Any = {}
-    ) -> typing.List[typing.Union[str, ShipStationBase, None]]:
+    def list_fulfillments(self, parameters: typing.Any = {}) -> Page:
         valid_parameters = self._validate_parameters(
             parameters, FULFILLMENT_LIST_PARAMETERS
         )
@@ -228,9 +224,7 @@ class ShipStation(ShipStationHTTP):
             call=(self.get, {"endpoint": "/fulfillments", "payload": valid_parameters}),
         )
 
-    def list_shipments(
-        self, parameters: typing.Any = {}
-    ) -> typing.List[typing.Union[str, ShipStationBase, None]]:
+    def list_shipments(self, parameters: typing.Any = {}) -> Page:
         valid_parameters = self._validate_parameters(
             parameters, SHIPMENT_LIST_PARAMETERS
         )

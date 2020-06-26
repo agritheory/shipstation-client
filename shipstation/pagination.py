@@ -12,7 +12,7 @@ from shipstation.base import ShipStationBase
 class Page:
     key: str
     type: type
-    call: typing.Tuple[typing.Callable, typing.Dict[str, str]]
+    call: typing.Tuple[typing.Callable, typing.Dict[str, typing.Any]]
     results: typing.List[ShipStationBase] = []
     page: int = 0
     pages: int = 0
@@ -25,11 +25,11 @@ class Page:
         self.load_results(response)
 
     def load_results(self, response: Response) -> "Page":
-        parsed = response  # .json(parse_float=Decimal)
-        self.results = [self.type().json(r) for r in parsed.get(self.key)]
-        self.page = parsed.get("page")
-        self.pages = parsed.get("pages")
-        self.total = parsed.get("total")
+        results = getattr(response, self.key, [])
+        self.results = [self.type().json(r) for r in results]
+        self.page = getattr(response, "page", 0)
+        self.pages = getattr(response, "pages", 0)
+        self.total = getattr(response, "total", 0)
         self._index = 0
         return self
 

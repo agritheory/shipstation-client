@@ -62,9 +62,10 @@ def mocked_api() -> respx.MockTransport:
             content=api_data.list_packages,
             alias="list_packages",
         )
-        respx_mock.get(
-            "/products", content=api_data.list_products, alias="list_products",
-        )
+        # tested in test_pagination.py
+        # respx_mock.get(
+        #     "/products", content=api_data.list_products, alias="list_products",
+        # )
         respx_mock.get(
             "/shipments", content=api_data.list_shipments, alias="list_shipments",
         )

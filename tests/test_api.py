@@ -250,15 +250,9 @@ def test_list_fulfillments(ss: ShipStation, mocked_api: respx.MockTransport) -> 
     assert response[1].notify_error_message is not None
 
 
-@respx.mock
-def test_list_products(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
-    request = mocked_api["list_products"]
-    response = ss.list_products()
-    assert isinstance(response, Page)
-    assert request.called
-    for product in response:
-        assert isinstance(product, ShipStationItem)
-        assert product.price == Decimal("11.99")
+"""
+test_list_products is tested in test_pagination.py
+"""
 
 
 # def test_label():
