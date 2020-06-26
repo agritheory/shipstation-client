@@ -11,6 +11,7 @@ from shipstation.base import ShipStationBase
 from shipstation.constants import *
 from shipstation.http import ShipStationHTTP
 from shipstation.models import *
+from shipstation.pagination import Page
 
 
 class ShipStation(ShipStationHTTP):
@@ -42,9 +43,7 @@ class ShipStation(ShipStationHTTP):
         return ShipStationOrder().json(r.text, parse_float=Decimal)
 
     # refactor
-    def list_orders(
-        self, parameters: typing.Dict[str, typing.Any] = {}
-    ) -> typing.List[typing.Union[str, ShipStationBase, None]]:
+    def list_orders(self, parameters: typing.Dict[str, typing.Any] = {}) -> Page:
         self.require_type(parameters, dict)
         invalid_keys = set(parameters.keys()).difference(ORDER_LIST_PARAMETERS)
         if invalid_keys:
@@ -54,9 +53,11 @@ class ShipStation(ShipStationHTTP):
         valid_parameters = {
             self.to_camel_case(key): value for key, value in parameters.items()
         }
-        response = self.get(endpoint="/orders/list", payload=valid_parameters)
-        orders = response.json(parse_float=Decimal).get("orders")
-        return [ShipStationOrder().json(r) for r in orders]
+        return Page(
+            type=ShipStationOrder,
+            key="orders",
+            call=(self.get, {"endpoint": "/orders/list"}),
+        )
 
     def get_order(self, order_id: str) -> typing.Union[str, ShipStationBase, None]:
         r = self.get(endpoint=f"/orders/{order_id}")
@@ -108,9 +109,11 @@ class ShipStation(ShipStationHTTP):
             payload["page"] = page
         if page_size:
             payload["pageSize"] = page_size
-        orders = self.get(endpoint="/orders/listbytag", payload=payload)
-        print(orders.json())
-        return [ShipStationOrder().json(order.text) for order in orders.json()]
+        return Page(
+            type=ShipStationOrder,
+            key="orders",
+            call=(self.get, {"endpoint": "/orders/listbytag", "payload": payload}),
+        )
 
     def mark_order_as_shipped(
         self,
@@ -146,14 +149,12 @@ class ShipStation(ShipStationHTTP):
         r = self.get(endpoint=f"/products/{product_id}")
         return ShipStationItem().json(r.text)
 
-    def list_products(self) -> typing.List[typing.Union[str, ShipStationBase, None]]:
-        r = self.get(endpoint="/products")
-        products = (
-            r.json(parse_float=Decimal).get("products")
-            if r.status_code == 200
-            else None
+    def list_products(self) -> Page:
+        return Page(
+            type=ShipStationItem,
+            key="products",
+            call=(self.get, {"endpoint": "/products"}),
         )
-        return [ShipStationItem().json(product) for product in products if product]
 
     def update_product(self, product: ShipStationItem) -> typing.Any:
         self.require_type(product, ShipStationItem)
@@ -209,10 +210,11 @@ class ShipStation(ShipStationHTTP):
         valid_parameters = self._validate_parameters(
             parameters, CUSTOMER_LIST_PARAMETERS
         )
-        r = self.get(endpoint="/customers", payload=valid_parameters)
-        customer_list = r.json(parse_float=Decimal).get("customers")
-        # handle multiple pages?
-        return [ShipStationCustomer().json(customer) for customer in customer_list]
+        return Page(
+            type=ShipStationCustomer,
+            key="customers",
+            call=(self.get, {"endpoint": "/customers", "payload": valid_parameters}),
+        )
 
     def list_fulfillments(
         self, parameters: typing.Any = {}
@@ -220,9 +222,11 @@ class ShipStation(ShipStationHTTP):
         valid_parameters = self._validate_parameters(
             parameters, FULFILLMENT_LIST_PARAMETERS
         )
-        r = self.get(endpoint="/fulfillments", payload=valid_parameters)
-        fulfillments = r.json(parse_float=Decimal).get("fulfillments")
-        return [ShipStationFulfillment().json(f) for f in fulfillments if f]
+        return Page(
+            type=ShipStationFulfillment,
+            key="fulfillments",
+            call=(self.get, {"endpoint": "/fulfillments", "payload": valid_parameters}),
+        )
 
     def list_shipments(
         self, parameters: typing.Any = {}
@@ -230,9 +234,11 @@ class ShipStation(ShipStationHTTP):
         valid_parameters = self._validate_parameters(
             parameters, SHIPMENT_LIST_PARAMETERS
         )
-        r = self.get(endpoint="/shipments", payload=valid_parameters)
-        shipments = r.json(parse_float=Decimal).get("shipments")
-        return [ShipStationOrder().json(s) for s in shipments if s]
+        return Page(
+            type=ShipStationOrder,
+            key="shipments",
+            call=(self.get, {"endpoint": "/shipments", "payload": valid_parameters}),
+        )
 
     # TODO: return shipment label as objects
     def create_shipment_label(self, order: str) -> ShipStationOrder:
@@ -267,12 +273,12 @@ class ShipStation(ShipStationHTTP):
     def list_stores(
         self, show_inactive: bool = False, marketplace_id: typing.Optional[str] = None
     ) -> typing.List[typing.Union[str, ShipStationBase]]:
-        self.require_type(show_inactive, bool)
-        self.require_type(marketplace_id, int)
-        parameters = {}
+        parameters = {}  # type: ignore
         if show_inactive:
+            self.require_type(show_inactive, bool)
             parameters["showInactive"] = show_inactive
         if marketplace_id:
+            self.require_type(marketplace_id, int)
             parameters["marketplaceId"] = marketplace_id
         stores = self.get(endpoint="/stores", payload=parameters)
         return [

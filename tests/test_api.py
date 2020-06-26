@@ -10,6 +10,7 @@ import respx
 from conftest import *
 from shipstation.api import ShipStation
 from shipstation.models import *
+from shipstation.pagination import Page
 
 
 @respx.mock
@@ -130,6 +131,7 @@ def test_list_orders(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
     request = mocked_api["list_orders"]
     response = ss.list_orders()
     assert request.called
+    # for order in response:
     assert isinstance(response[0], ShipStationOrder)
     assert isinstance(response[0].ship_to, ShipStationAddress)
     assert isinstance(response[0].advanced_options, ShipStationAdvancedOptions)
@@ -249,12 +251,14 @@ def test_list_fulfillments(ss: ShipStation, mocked_api: respx.MockTransport) -> 
 
 
 @respx.mock
-def test_list_packages(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+def test_list_products(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
     request = mocked_api["list_products"]
     response = ss.list_products()
+    assert isinstance(response, Page)
     assert request.called
-    assert isinstance(response[0], ShipStationItem)
-    assert response[0].price == Decimal("11.99")
+    for product in response:
+        assert isinstance(product, ShipStationItem)
+        assert product.price == Decimal("11.99")
 
 
 # def test_label():
