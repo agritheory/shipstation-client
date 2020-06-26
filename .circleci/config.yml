@@ -24,3 +24,6 @@ jobs:
       - run:
           name: Run Tests
           command: poetry run pytest -s --mypy shipstation --cov=shipstation
+      - run:
+          name: Build Distributions
+          command: poetry build
