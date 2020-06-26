@@ -1,6 +1,5 @@
 import json
 
-import httpx
 import pytest
 import respx
 
@@ -11,7 +10,7 @@ from shipstation.models import *
 
 @pytest.fixture
 def ss() -> ShipStation:
-    yield ShipStation(key="123456789", secret="123456789", debug=True, timeout=1)
+    yield ShipStation(key="123456789", secret="123456789", debug=False, timeout=1)
 
 
 @pytest.fixture(scope="session")
@@ -63,9 +62,10 @@ def mocked_api() -> respx.MockTransport:
             content=api_data.list_packages,
             alias="list_packages",
         )
-        respx_mock.get(
-            "/products", content=api_data.list_products, alias="list_products",
-        )
+        # tested in test_pagination.py
+        # respx_mock.get(
+        #     "/products", content=api_data.list_products, alias="list_products",
+        # )
         respx_mock.get(
             "/shipments", content=api_data.list_shipments, alias="list_shipments",
         )
