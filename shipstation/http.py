@@ -9,18 +9,14 @@ from shipstation.base import ShipStationBase
 
 class ShipStationHTTP(ShipStationBase):
     url: typing.Optional[str] = None
-    key: typing.Optional[str] = None
-    secret: typing.Optional[str] = None
+    key: typing.Optional[str]
+    secret: typing.Optional[str]
     debug: typing.Optional[bool] = False
     timeout: typing.Optional[int] = None
 
     def __init__(
         self, key: str, secret: str, debug: bool = False, timeout: int = 1
     ) -> None:
-        if key is None:
-            raise AttributeError("Key must be supplied.")
-        if secret is None:
-            raise AttributeError("Secret must be supplied.")
         self.url = "https://ssapi.shipstation.com"
         self.key = key
         self.secret = secret
@@ -39,7 +35,7 @@ class ShipStationHTTP(ShipStationBase):
             timeout=self.timeout,
         )
         if self.debug:
-            print(f"GET {self.url}{endpoint}")
+            print(f"GET {r.url}")
             print(json.dumps(r.json(), indent=4, sort_keys=True))
         return r
 
@@ -52,7 +48,7 @@ class ShipStationHTTP(ShipStationBase):
             timeout=self.timeout,
         )
         if self.debug:
-            print(f"POST {self.url}{endpoint}")
+            print(f"POST {r.url}")
             print(json.dumps(r.json(), indent=4, sort_keys=True))
         return r
 
@@ -65,7 +61,7 @@ class ShipStationHTTP(ShipStationBase):
             timeout=self.timeout,
         )
         if self.debug:
-            print(f" PUT {self.url}{endpoint}")
+            print(f" PUT {r.url}")
             print(json.dumps(r.json(), indent=4, sort_keys=True))
         return r
 
@@ -77,6 +73,6 @@ class ShipStationHTTP(ShipStationBase):
             timeout=self.timeout,
         )
         if self.debug:
-            print(f" DELETE {self.url}{endpoint}")
+            print(f"DELETE {r.url}")
             print(json.dumps(r.json(), indent=4, sort_keys=True))
         return r
