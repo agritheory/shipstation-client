@@ -29,7 +29,7 @@ def mocked_pagination() -> respx.MockTransport:
 
 @respx.mock
 def test_list_products(ss: ShipStation, mocked_pagination: respx.MockTransport) -> None:
-    response = ss.list_products()
+    page = ss.list_products()
     skus = (
         "987654321",
         "987654322",
@@ -40,8 +40,11 @@ def test_list_products(ss: ShipStation, mocked_pagination: respx.MockTransport) 
         "987654327",
         "987654328",
     )
-    assert isinstance(response, Page)
-    for index, product in enumerate(response):
+    assert isinstance(page, Page)
+    assert len(page) == 3 == len(page.results)
+    assert page[0].sku == skus[0]
+    for index, product in enumerate(page):
+        print(skus[index], product.sku)
         assert isinstance(product, ShipStationItem)
         assert product.price == Decimal("11.99")
         assert product.sku == skus[index]
@@ -188,7 +191,7 @@ test_list_products_second = """
         "noCustoms": null,
         "price": 11.99,
         "productCategory": null,
-        "productId": 987654321,
+        "productId": 987654324,
         "productType": null,
         "sku": "987654324",
         "tags": null,
@@ -222,7 +225,7 @@ test_list_products_second = """
         "noCustoms": null,
         "price": 11.99,
         "productCategory": null,
-        "productId": 18139199,
+        "productId": 987654325,
         "productType": null,
         "sku": "987654325",
         "tags": null,
@@ -299,7 +302,7 @@ test_list_products_third = """
         "noCustoms": null,
         "price": 11.99,
         "productCategory": null,
-        "productId": 987654321,
+        "productId": 987654327,
         "productType": null,
         "sku": "987654327",
         "tags": null,

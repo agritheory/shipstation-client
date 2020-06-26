@@ -21,15 +21,16 @@ class Page:
 
     def __attrs_post_init__(self) -> None:
         f, args = self.call[0], self.call[1]
-        response = f(**args).json(parse_float=Decimal)
+        response = f(**args)
         self.load_results(response)
 
     def load_results(self, response: Response) -> "Page":
-        results = getattr(response, self.key, [])
-        self.results = [self.type().json(r) for r in results]
-        self.page = getattr(response, "page", 0)
-        self.pages = getattr(response, "pages", 0)
-        self.total = getattr(response, "total", 0)
+        results = response.json(parse_float=Decimal)
+        self.results = []
+        self.results = [self.type().json(r) for r in results.get(self.key)]
+        self.page = results.get("page", 0)
+        self.pages = results.get("pages", 0)
+        self.total = results.get("total", 0)
         self._index = 0
         return self
 
@@ -37,9 +38,8 @@ class Page:
         return self
 
     def __next__(self) -> typing.Optional[ShipStationBase]:
-        if self.results and self._index >= len(self.results):
+        if self.results and self._index == len(self.results):
             self = self.next_page()
-            return None
         results = self.results[self._index] if self.results else None
         self._index += 1
         return results
@@ -47,10 +47,12 @@ class Page:
     def next_page(self) -> "Page":
         if self.page >= self.pages:
             raise StopIteration
-        f, args = self.call[0], self.call[1]
-        args["payload"] = str({"page": str(self.page + 1)})
-        response = f(**args).json(parse_float=Decimal)
-        return self.load_results(response)
+        api_method, args = self.call[0], self.call[1]
+        args["payload"] = {"page": str(self.page + 1)}
+        return self.load_results(api_method(**args))
 
     def __getitem__(self, index) -> ShipStationBase:
         return self.results[index]
+
+    def __len__(self) -> int:
+        return len(self.results)
