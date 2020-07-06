@@ -56,6 +56,7 @@ class ShipStation(ShipStationHTTP):
         return Page(
             type=ShipStationOrder,
             key="orders",
+            params=valid_parameters,
             call=(self.get, {"endpoint": "/orders/list"}),
         )
 

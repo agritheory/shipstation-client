@@ -14,6 +14,7 @@ class Page:
     type: type
     call: typing.Tuple[typing.Callable, typing.Dict[str, typing.Any]]
     results: typing.List[ShipStationBase] = []
+    params: typing.Optional[typing.Dict[str, typing.Any]] = None
     page: int = 0
     pages: int = 0
     total: int = 0
@@ -21,6 +22,8 @@ class Page:
 
     def __attrs_post_init__(self) -> None:
         f, args = self.call[0], self.call[1]
+        if self.params:
+            args = {**self.call[1], "payload": self.params}
         response = f(**args)
         self.load_results(response)
 
