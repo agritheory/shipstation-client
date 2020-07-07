@@ -24,6 +24,7 @@ __all__ = [
     "ShipStationItem",
     "ShipStationMarketplace",
     "ShipStationOrder",
+    "ShipStationOrderItem",
     "ShipStationOrderTag",
     "ShipStationProductCategory",
     "ShipStationProductTag",
@@ -74,7 +75,7 @@ class ShipStationAdvancedOptions(ShipStationBase):
     custom_field3: typing.Optional[str] = None
     source: typing.Optional[str] = None
     merged_or_split: typing.Optional[str] = None
-    merged_ids: typing.Optional[typing.Sequence[str]] = None
+    merged_ids: typing.Optional[typing.List[str]] = None
     bill_to_party: typing.Optional[str] = None
     bill_to_account: typing.Optional[str] = None
     bill_to_postal_code: typing.Optional[str] = None
@@ -124,7 +125,7 @@ class ShipStationProductCategory(ShipStationBase):
 
 @attrs(auto_attribs=True)
 class ShipStationItem(ShipStationBase):
-    aliases: typing.Optional[typing.Sequence[str]] = None
+    aliases: typing.Optional[typing.List[str]] = None
     product_id: typing.Optional[int] = None
     sku: typing.Optional[str] = None
     name: typing.Optional[str] = None
@@ -155,7 +156,7 @@ class ShipStationItem(ShipStationBase):
     customs_tariff_no: typing.Optional[str] = None
     customs_country_code: typing.Optional[str] = None
     no_customs: typing.Optional[bool] = None
-    tags: typing.Optional[typing.Sequence[ShipStationProductTag]] = None
+    tags: typing.Optional[typing.List[ShipStationProductTag]] = None
 
 
 @attrs(auto_attribs=True)
@@ -182,6 +183,34 @@ class ShipStationOrderTag(ShipStationBase):
 
 
 @attrs(auto_attribs=True)
+class ShipStationItemOption(ShipStationBase):
+    name: typing.Optional[str] = None
+    value: typing.Optional[str] = None
+
+
+@attrs(auto_attribs=True)
+class ShipStationOrderItem(ShipStationBase):
+    order_item_id: typing.Optional[str] = None
+    line_item_key: typing.Optional[str] = None
+    sku: typing.Optional[str] = None
+    name: typing.Optional[str] = None
+    image_url: typing.Optional[str] = None
+    weight: typing.Optional[ShipStationWeight] = None
+    quantity: typing.Optional[int] = None
+    unit_price: typing.Optional[Decimal] = None
+    tax_amount: typing.Optional[Decimal] = None
+    shippingAmount: typing.Optional[Decimal] = None
+    warehouseLocation: typing.Optional[str] = None
+    options: typing.Optional[typing.List[ShipStationItemOption]] = None
+    productId: typing.Optional[str] = None
+    fulfillmentSku: typing.Optional[str] = None
+    adjustment: typing.Optional[bool] = None
+    upc: typing.Optional[str] = None
+    createDate: typing.Optional[datetime] = None
+    modifyDate: typing.Optional[datetime] = None
+
+
+@attrs(auto_attribs=True)
 class ShipStationOrder(ShipStationBase):
     # Required attributes
     order_number: typing.Optional[str] = None
@@ -194,7 +223,7 @@ class ShipStationOrder(ShipStationBase):
     payment_date: typing.Optional[str] = None
     customer_username: typing.Optional[str] = None
     customer_email: typing.Optional[str] = None
-    items: typing.Optional[typing.Sequence[ShipStationItem]] = None
+    items: typing.Optional[typing.List[ShipStationOrderItem]] = None
     amount_paid: typing.Optional[Decimal] = None
     tax_amount: typing.Optional[Decimal] = None
     shipping_amount: typing.Optional[Decimal] = None
@@ -236,7 +265,7 @@ class ShipStationOrder(ShipStationBase):
     gift_message: typing.Optional[str] = None
     requested_shipping_service: typing.Optional[str] = None
     hold_until_date: typing.Optional[datetime] = None
-    tag_ids: typing.Optional[typing.Sequence[ShipStationOrderTag]] = None
+    tag_ids: typing.Optional[typing.List[ShipStationOrderTag]] = None
     externally_fulfilled: typing.Optional[bool] = None
     externally_fulfilled_by: typing.Optional[str] = None
     label_messages: typing.Optional[str] = None
@@ -267,7 +296,7 @@ class ShipStationStore(ShipStationBase):
     create_date: typing.Optional[date] = None
     modify_date: typing.Optional[date] = None
     auto_refresh: typing.Optional[bool] = None
-    status_mappings: typing.Optional[typing.Sequence[ShipStationStatusMapping]] = None
+    status_mappings: typing.Optional[typing.List[ShipStationStatusMapping]] = None
 
 
 @attrs(auto_attribs=True)
@@ -354,7 +383,7 @@ class ShipStationCustomer(ShipStationBase):
     customer_id: typing.Optional[int] = None
     email: typing.Optional[str] = None
     marketplace_usernames: typing.Optional[
-        typing.Sequence[ShipStationMarketplaceUsername]
+        typing.List[ShipStationMarketplaceUsername]
     ] = None
     modify_date: typing.Optional[date] = None
     name: typing.Optional[str] = None
@@ -363,7 +392,7 @@ class ShipStationCustomer(ShipStationBase):
     state: typing.Optional[str] = None
     street1: typing.Optional[str] = None
     street2: typing.Optional[str] = None
-    tags: typing.Optional[typing.Sequence[typing.Any]] = None
+    tags: typing.Optional[typing.List[typing.Any]] = None
 
 
 @attrs(auto_attribs=True)
