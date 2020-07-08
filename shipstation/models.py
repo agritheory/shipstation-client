@@ -199,15 +199,15 @@ class ShipStationOrderItem(ShipStationBase):
     quantity: typing.Optional[int] = None
     unit_price: typing.Optional[Decimal] = None
     tax_amount: typing.Optional[Decimal] = None
-    shippingAmount: typing.Optional[Decimal] = None
-    warehouseLocation: typing.Optional[str] = None
+    shipping_amount: typing.Optional[Decimal] = None
+    warehouse_location: typing.Optional[str] = None
     options: typing.Optional[typing.List[ShipStationItemOption]] = None
     productId: typing.Optional[str] = None
-    fulfillmentSku: typing.Optional[str] = None
+    fulfillment_sku: typing.Optional[str] = None
     adjustment: typing.Optional[bool] = None
     upc: typing.Optional[str] = None
-    createDate: typing.Optional[datetime] = None
-    modifyDate: typing.Optional[datetime] = None
+    create_date: typing.Optional[datetime] = None
+    modify_date: typing.Optional[datetime] = None
 
 
 @attrs(auto_attribs=True)

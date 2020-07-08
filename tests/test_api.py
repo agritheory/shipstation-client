@@ -132,8 +132,10 @@ def test_list_orders(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
     response = ss.list_orders()
     assert request.called
     # for order in response:
+    print("items", response[0].items)
     assert isinstance(response[0], ShipStationOrder)
     assert isinstance(response[0].ship_to, ShipStationAddress)
+    # assert isinstance(response[0].items[0], ShipStationOrderItem)
     assert isinstance(response[0].advanced_options, ShipStationAdvancedOptions)
     assert isinstance(response[0].weight, ShipStationWeight)
     assert isinstance(
