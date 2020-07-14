@@ -265,7 +265,7 @@ class ShipStationOrder(ShipStationBase):
     gift_message: typing.Optional[str] = None
     requested_shipping_service: typing.Optional[str] = None
     hold_until_date: typing.Optional[datetime] = None
-    tag_ids: typing.Optional[typing.List[ShipStationOrderTag]] = None
+    tag_ids: typing.Optional[typing.List[int]] = None
     externally_fulfilled: typing.Optional[bool] = None
     externally_fulfilled_by: typing.Optional[str] = None
     label_messages: typing.Optional[str] = None
