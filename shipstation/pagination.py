@@ -12,7 +12,7 @@ from shipstation.base import ShipStationBase
 class Page:
     key: str
     type: type
-    call: typing.Tuple[typing.Callable, typing.Dict[str, typing.Any]]
+    call: typing.Optional[typing.Tuple[typing.Callable, typing.Dict[str, typing.Any]]]
     results: typing.List[ShipStationBase] = []
     params: typing.Optional[typing.Dict[str, typing.Any]] = None
     page: int = 0
@@ -41,6 +41,8 @@ class Page:
         return self
 
     def __next__(self) -> typing.Optional[ShipStationBase]:
+        if not self.results:
+            raise StopIteration
         if self.results and self._index == len(self.results):
             self = self.next_page()
         results = self.results[self._index] if self.results else None

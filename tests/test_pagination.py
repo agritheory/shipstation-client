@@ -24,7 +24,19 @@ def mocked_pagination() -> respx.MockTransport:
         respx_mock.get(
             "/products?page=3", content=test_list_products_third,
         )
+        respx_mock.get(
+            "/products", content=list_products_none, alias="list_products_none"
+        )
         yield respx_mock
+
+
+@respx.mock
+def test_no_results(ss: ShipStation, mocked_pagination: respx.MockTransport) -> None:
+    request = mocked_pagination["list_products_none"]
+    response = ss.list_products()
+    assert isinstance(response, Page)
+    for index, product in enumerate(response):
+        assert True
 
 
 @respx.mock
@@ -45,6 +57,16 @@ def test_list_products(ss: ShipStation, mocked_pagination: respx.MockTransport) 
         assert isinstance(product, ShipStationItem)
         assert product.price == Decimal("11.99")
         assert product.sku == skus[index]
+
+
+list_products_none = """
+{
+    "page": 1,
+    "pages": 1,
+    "products": [],
+    "total": 1
+}
+"""
 
 
 test_list_products_first = """
