@@ -269,6 +269,7 @@ class ShipStationOrder(ShipStationBase):
     externally_fulfilled: typing.Optional[bool] = None
     externally_fulfilled_by: typing.Optional[str] = None
     label_messages: typing.Optional[str] = None
+    test_label: typing.Optional[bool] = None
 
 
 @attrs(auto_attribs=True)
