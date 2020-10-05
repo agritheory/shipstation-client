@@ -53,7 +53,7 @@ class Page:
         if self.page >= self.pages:
             raise StopIteration
         api_method, args = self.call[0], self.call[1]
-        args["payload"] = {"page": str(self.page + 1)}
+        args["payload"] = {**self.params, "page": str(self.page + 1)}
         return self.load_results(api_method(**args))
 
     def __getitem__(self, index) -> ShipStationBase:
