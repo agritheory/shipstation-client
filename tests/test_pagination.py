@@ -69,7 +69,9 @@ def test_list_products(ss: ShipStation, mocked_pagination: respx.MockTransport) 
 
 
 @respx.mock
-def test_list_products_ensure_params(ss: ShipStation, mocked_pagination: respx.MockTransport) -> None:
+def test_list_products_ensure_params(
+    ss: ShipStation, mocked_pagination: respx.MockTransport
+) -> None:
     request = mocked_pagination["list_products_params_1"]
     response = ss.list_products(parameters={"pageSize": "3"})
     skus = (
@@ -88,9 +90,6 @@ def test_list_products_ensure_params(ss: ShipStation, mocked_pagination: respx.M
         assert product.price == Decimal("11.99")
         assert product.sku == skus[index]
         assert response.params == {"pageSize": "3"}
-
-
-
 
 
 list_products_none = """
