@@ -150,10 +150,11 @@ class ShipStation(ShipStationHTTP):
         r = self.get(endpoint=f"/products/{product_id}")
         return ShipStationItem().json(r.text)
 
-    def list_products(self) -> Page:
+    def list_products(self, parameters: typing.Dict[str, typing.Any] = {}) -> Page:
         return Page(
             type=ShipStationItem,
             key="products",
+            params=parameters,
             call=(self.get, {"endpoint": "/products"}),
         )
 
@@ -212,6 +213,7 @@ class ShipStation(ShipStationHTTP):
         return Page(
             type=ShipStationCustomer,
             key="customers",
+            params=parameters,
             call=(self.get, {"endpoint": "/customers", "payload": valid_parameters}),
         )
 
@@ -222,6 +224,7 @@ class ShipStation(ShipStationHTTP):
         return Page(
             type=ShipStationFulfillment,
             key="fulfillments",
+            params=parameters,
             call=(self.get, {"endpoint": "/fulfillments", "payload": valid_parameters}),
         )
 
@@ -232,6 +235,7 @@ class ShipStation(ShipStationHTTP):
         return Page(
             type=ShipStationOrder,
             key="shipments",
+            params=parameters,
             call=(self.get, {"endpoint": "/shipments", "payload": valid_parameters}),
         )
 
