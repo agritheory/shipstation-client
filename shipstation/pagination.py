@@ -21,9 +21,9 @@ class Page:
     _index: int = 0
 
     def __attrs_post_init__(self) -> None:
-        f, args = self.call[0], self.call[1]
+        f, args = self.call[0], self.call[1]  # type: ignore
         if self.params:
-            args = {**self.call[1], "payload": self.params}
+            args = {**self.call[1], "payload": self.params}  # type: ignore
         response = f(**args)
         self.load_results(response)
 
@@ -52,8 +52,8 @@ class Page:
     def next_page(self) -> "Page":
         if self.page >= self.pages:
             raise StopIteration
-        api_method, args = self.call[0], self.call[1]
-        args["payload"] = {"page": str(self.page + 1)}
+        api_method, args = self.call[0], self.call[1]  # type: ignore
+        args["payload"] = {**(self.params or {}), "page": str(self.page + 1)}
         return self.load_results(api_method(**args))
 
     def __getitem__(self, index) -> ShipStationBase:
