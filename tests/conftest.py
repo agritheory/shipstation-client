@@ -10,7 +10,7 @@ from shipstation.models import *
 
 @pytest.fixture
 def ss() -> ShipStation:
-    yield ShipStation(key="123456789", secret="123456789", debug=True, timeout=1)
+    yield ShipStation(key="123456789", secret="123456789", debug=False, timeout=1)
 
 
 @pytest.fixture(scope="session")
