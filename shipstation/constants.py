@@ -39,6 +39,22 @@ CONFIRMATION_VALUES = (
     "direct_signature",
 )
 
+# https://www.shipstation.com/docs/api/products/list/
+PRODUCT_LIST_PARAMETERS = (
+    "sku",
+    "name",
+    "product_category_id",
+    "product_type_id",
+    "tag_id",
+    "start_date",
+    "end_date",
+    "show_inactive",
+    "sort_by",
+    "sort_dir",
+    "page",
+    "page_size"
+)
+
 
 # https://www.shipstation.com/developer-api/#/reference/orders/list-orders/list-orders-with-parameters
 ORDER_LIST_PARAMETERS = (

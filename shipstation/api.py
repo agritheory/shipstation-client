@@ -151,10 +151,13 @@ class ShipStation(ShipStationHTTP):
         return ShipStationItem().json(r.text) #TODO: switch to parse float and test deserialization
 
     def list_products(self, parameters: typing.Dict[str, typing.Any] = {}) -> Page:
+        valid_parameters = self._validate_parameters(
+            parameters, PRODUCT_LIST_PARAMETERS
+        )
         return Page(
             type=ShipStationItem,
             key="products",
-            params=parameters,
+            params=valid_parameters,
             call=(self.get, {"endpoint": "/products"}),
         )
 
@@ -213,8 +216,8 @@ class ShipStation(ShipStationHTTP):
         return Page(
             type=ShipStationCustomer,
             key="customers",
-            params=parameters,
-            call=(self.get, {"endpoint": "/customers", "payload": valid_parameters}),
+            params=valid_parameters,
+            call=(self.get, {"endpoint": "/customers"}),
         )
 
     def list_fulfillments(self, parameters: typing.Any = {}) -> Page:
@@ -224,8 +227,8 @@ class ShipStation(ShipStationHTTP):
         return Page(
             type=ShipStationFulfillment,
             key="fulfillments",
-            params=parameters,
-            call=(self.get, {"endpoint": "/fulfillments", "payload": valid_parameters}),
+            params=valid_parameters,
+            call=(self.get, {"endpoint": "/fulfillments"}),
         )
 
     def list_shipments(self, parameters: typing.Any = {}) -> Page:
@@ -235,8 +238,8 @@ class ShipStation(ShipStationHTTP):
         return Page(
             type=ShipStationOrder,
             key="shipments",
-            params=parameters,
-            call=(self.get, {"endpoint": "/shipments", "payload": valid_parameters}),
+            params=valid_parameters,
+            call=(self.get, {"endpoint": "/shipments"}),
         )
 
     # TODO: return shipment label as objects
