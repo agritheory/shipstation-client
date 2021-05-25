@@ -2,6 +2,7 @@ import json
 
 import pytest
 import respx
+from httpx import Response
 
 import api_data
 from shipstation.api import ShipStation
@@ -69,6 +70,7 @@ def mocked_api() -> respx.MockTransport:
         respx_mock.get(
             "/shipments", content=api_data.list_shipments, alias="list_shipments",
         )
+        respx_mock.get("/shipments", alias="list_shipments_500") % Response(500)
         respx_mock.get(
             "/carriers/listservices?carrierCode=stamps_com",
             content=api_data.list_services,
