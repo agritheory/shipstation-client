@@ -220,8 +220,8 @@ def test_list_shipments(ss: ShipStation, mocked_api: respx.MockTransport) -> Non
 
 
 @respx.mock
-def test_list_shipments_500(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
-    request = mocked_api["list_shipments_500"]
+def test_list_shipments_error(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+    request = mocked_api["list_shipments_error"]
     with pytest.raises(httpx.HTTPStatusError):
         ss.list_shipments()
 
