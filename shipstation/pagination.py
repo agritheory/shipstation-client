@@ -1,8 +1,8 @@
 import typing
-from decimal import Decimal
-from functools import partial
 
 from attr import attrib, attrs
+from decimal import Decimal
+from functools import partial
 from httpx import Response
 
 from shipstation.base import ShipStationBase

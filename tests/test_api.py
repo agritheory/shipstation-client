@@ -4,6 +4,7 @@ import os
 from decimal import Decimal
 from uuid import UUID
 
+import httpx
 import pytest
 import respx
 
@@ -216,6 +217,13 @@ def test_list_shipments(ss: ShipStation, mocked_api: respx.MockTransport) -> Non
     assert response[0].create_date == datetime.datetime(2015, 6, 29, 14, 29, 28, 583000)
     assert response[0].shipment_cost == Decimal("2.35")
     assert response[0].tracking_number == "9400111899562764298812"
+
+
+@respx.mock
+def test_list_shipments_error(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+    request = mocked_api["list_shipments_error"]
+    with pytest.raises(httpx.HTTPStatusError):
+        ss.list_shipments()
 
 
 @respx.mock
