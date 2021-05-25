@@ -1,8 +1,8 @@
 import typing
-from decimal import Decimal
-from functools import partial
 
 from attr import attrib, attrs
+from decimal import Decimal
+from functools import partial
 from httpx import Response
 
 from shipstation.base import ShipStationBase
@@ -25,6 +25,8 @@ class Page:
         if self.params:
             args = {**self.call[1], "payload": self.params}  # type: ignore
         response = f(**args)
+        if response.is_error:
+            response.raise_for_status()
         self.load_results(response)
 
     def load_results(self, response: Response) -> "Page":
