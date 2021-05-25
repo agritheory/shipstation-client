@@ -25,8 +25,6 @@ class Page:
         if self.params:
             args = {**self.call[1], "payload": self.params}  # type: ignore
         response = f(**args)
-        if response.is_error:
-            response.raise_for_status()
         self.load_results(response)
 
     def load_results(self, response: Response) -> "Page":

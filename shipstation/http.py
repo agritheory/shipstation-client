@@ -37,6 +37,8 @@ class ShipStationHTTP(ShipStationBase):
         if self.debug:
             print(f"GET {r.url}")
             print(json.dumps(r.json(), indent=4, sort_keys=True))
+        if r.is_error:
+            r.raise_for_status()
         return r
 
     def post(self, data: typing.Any = None, endpoint: str = "") -> httpx.Response:
@@ -50,6 +52,8 @@ class ShipStationHTTP(ShipStationBase):
         if self.debug:
             print(f"POST {r.url}")
             print(json.dumps(r.json(), indent=4, sort_keys=True))
+        if r.is_error:
+            r.raise_for_status()
         return r
 
     def put(self, data: typing.Any = None, endpoint: str = "") -> httpx.Response:
@@ -61,8 +65,10 @@ class ShipStationHTTP(ShipStationBase):
             timeout=self.timeout,
         )
         if self.debug:
-            print(f" PUT {r.url}")
+            print(f"PUT {r.url}")
             print(json.dumps(r.json(), indent=4, sort_keys=True))
+        if r.is_error:
+            r.raise_for_status()
         return r
 
     def delete(self, payload: typing.Any = None, endpoint: str = "") -> httpx.Response:
@@ -75,4 +81,6 @@ class ShipStationHTTP(ShipStationBase):
         if self.debug:
             print(f"DELETE {r.url}")
             print(json.dumps(r.json(), indent=4, sort_keys=True))
+        if r.is_error:
+            r.raise_for_status()
         return r
