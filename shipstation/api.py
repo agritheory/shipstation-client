@@ -148,7 +148,9 @@ class ShipStation(ShipStationHTTP):
 
     def get_product(self, product_id: str) -> typing.Union[str, ShipStationBase, None]:
         r = self.get(endpoint=f"/products/{product_id}")
-        return ShipStationItem().json(r.text) #TODO: switch to parse float and test deserialization
+        return ShipStationItem().json(
+            r.text
+        )  # TODO: switch to parse float and test deserialization
 
     def list_products(self, parameters: typing.Dict[str, typing.Any] = {}) -> Page:
         return Page(

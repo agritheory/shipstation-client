@@ -35,7 +35,7 @@ def mock_order() -> ShipStationOrder:
             street3=None,
             city="WASHINGTON",
             state="DC",
-            postal_code='20500',
+            postal_code="20500",
             country=None,
             phone="",
             address_verified=None,
@@ -48,7 +48,7 @@ def mock_order() -> ShipStationOrder:
             street3=None,
             city="WASHINGTON",
             state="DC",
-            postal_code='20500',
+            postal_code="20500",
             country=None,
             phone="",
             address_verified=None,
@@ -63,7 +63,9 @@ def mock_order() -> ShipStationOrder:
 
 @respx.mock
 def test_create_order(
-    ss: ShipStation, mocked_order_creation: respx.MockTransport, mock_order: ShipStationOrder
+    ss: ShipStation,
+    mocked_order_creation: respx.MockTransport,
+    mock_order: ShipStationOrder,
 ) -> None:
     request = mocked_order_creation["test_order_creation"]
     response = ss.create_order(mock_order)
@@ -71,7 +73,6 @@ def test_create_order(
     assert isinstance(response.bill_to, ShipStationAddress)
     assert isinstance(response.ship_to, ShipStationAddress)
     assert isinstance(response.ship_date, datetime.datetime)
-
 
 
 order_creation = """
