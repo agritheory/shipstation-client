@@ -70,6 +70,7 @@ def mocked_api() -> respx.MockTransport:
         respx_mock.get(
             "/shipments", content=api_data.list_shipments, alias="list_shipments",
         )
+        # mocking with an exception: https://lundberg.github.io/respx/guide/#modulo-shortcut
         respx_mock.get("/shipments", alias="list_shipments_error") % Response(500)
         respx_mock.get(
             "/carriers/listservices?carrierCode=stamps_com",
