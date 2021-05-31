@@ -89,7 +89,7 @@ class ShipStation(ShipStationHTTP):
         new_data = self.convert_camel_case(r.json())
         if pdf:
             return BytesIO(base64.b64decode(new_data["label_data"]))  # type: ignore
-        for key, value in new_data:  # refactor to generator
+        for key, value in new_data.items():
             if value:
                 setattr(order, key, value)
         return order
