@@ -24,7 +24,9 @@ def mocked_api() -> respx.MockTransport:
             alias="get_carrier",
         )
         respx_mock.get(
-            "/customers/123456789", content=api_data.get_customer, alias="get_customer",
+            "/customers/123456789",
+            content=api_data.get_customer,
+            alias="get_customer",
         )
         respx_mock.get(
             "/orders/123456789", content=api_data.get_order, alias="get_order"
@@ -37,7 +39,9 @@ def mocked_api() -> respx.MockTransport:
         )
         respx_mock.get("/stores/12345", content=api_data.get_store, alias="get_store")
         respx_mock.get(
-            "/warehouses/456789", content=api_data.get_warehouse, alias="get_warehouse",
+            "/warehouses/456789",
+            content=api_data.get_warehouse,
+            alias="get_warehouse",
         )
         respx_mock.get(
             "/carriers", content=api_data.list_carriers, alias="list_carriers"
@@ -56,7 +60,14 @@ def mocked_api() -> respx.MockTransport:
             alias="list_marketplaces",
         )
         respx_mock.get(
-            "/orders/list", content=api_data.list_orders, alias="list_orders",
+            "/orders/list",
+            content=api_data.list_orders,
+            alias="list_orders",
+        )
+        respx_mock.get(
+            "/orders/createlabelfororder",
+            content=api_data.create_label_for_order,
+            alias="create_label_for_order",
         )
         respx_mock.get(
             "/carriers/listpackages?carrierCode=stamps_com",
@@ -68,7 +79,9 @@ def mocked_api() -> respx.MockTransport:
         #     "/products", content=api_data.list_products, alias="list_products",
         # )
         respx_mock.get(
-            "/shipments", content=api_data.list_shipments, alias="list_shipments",
+            "/shipments",
+            content=api_data.list_shipments,
+            alias="list_shipments",
         )
         # mocking with an exception: https://lundberg.github.io/respx/guide/#modulo-shortcut
         respx_mock.get("/shipments", alias="list_shipments_error") % Response(500)

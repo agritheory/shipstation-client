@@ -150,6 +150,21 @@ def test_list_orders(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
 
 
 @respx.mock
+def test_create_label_for_order_without_pdf(
+    ss: ShipStation, mocked_api: respx.MockTransport
+):
+    request = mocked_api["create_label_for_order"]
+    response = ss.create_label_for_order()
+    assert request.called
+    assert isinstance(response, ShipStationOrder)
+    assert response.shipment_id == 72513480
+    assert response.shipment_cost == 7.3
+    assert response.tracking_number == "248201115029520"
+    assert response.label_data is not None
+    assert hasattr(response, "test_label") is False
+
+
+@respx.mock
 def test_list_stores(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
     request = mocked_api["list_stores"]
     response = ss.list_stores(marketplace_id=2)
