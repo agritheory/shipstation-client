@@ -16,6 +16,7 @@ __all__ = [
     "SUBSCRIBE_TO_WEBHOOK_EVENT_OPTIONS",
     "WEIGHT_UNIT_OPTIONS",
     "CREATE_WAREHOUSE_OPTIONS",
+    "PRODUCT_LIST_PARAMETERS",
 ]
 
 # https://www.shipstation.com/developer-api/#/reference/orders/createupdate-order/create/update-order
