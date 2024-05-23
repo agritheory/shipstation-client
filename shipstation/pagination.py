@@ -1,21 +1,18 @@
 from collections.abc import Callable
 from decimal import Decimal
-from functools import partial
-from typing import Any
 
-from attr import attrib, attrs
+from attrs import define
 from httpx import Response
-
 from shipstation.base import ShipStationBase
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class Page:
     key: str
     type: type
-    call: tuple[Callable, dict[str, Any]] | None
+    call: tuple[Callable, dict[str]] | None
     results: list[ShipStationBase] = []
-    params: dict[str, Any] | None = None
+    params: dict[str] | None = None
     page: int = 0
     pages: int = 0
     total: int = 0

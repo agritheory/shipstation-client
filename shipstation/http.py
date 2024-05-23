@@ -1,9 +1,7 @@
 import json
-from typing import Any
 
 import httpx
 from httpx._types import AuthTypes, QueryParamTypes, RequestData
-
 from shipstation.base import ShipStationBase
 
 
@@ -27,7 +25,9 @@ class ShipStationHTTP(ShipStationBase):
     def auth(self) -> AuthTypes:
         return tuple([self.key, self.secret])  # type: ignore
 
-    def get(self, payload: Any = None, endpoint: str = "") -> httpx.Response:
+    def get(
+        self, payload: QueryParamTypes = None, endpoint: str = ""
+    ) -> httpx.Response:
         r = httpx.get(
             url=f"{self.url}{endpoint}",
             auth=self.auth,
@@ -41,7 +41,7 @@ class ShipStationHTTP(ShipStationBase):
             r.raise_for_status()
         return r
 
-    def post(self, data: Any = None, endpoint: str = "") -> httpx.Response:
+    def post(self, data: RequestData = None, endpoint: str = "") -> httpx.Response:
         r = httpx.post(
             url=f"{self.url}{endpoint}",
             auth=self.auth,
@@ -56,7 +56,7 @@ class ShipStationHTTP(ShipStationBase):
             r.raise_for_status()
         return r
 
-    def put(self, data: Any = None, endpoint: str = "") -> httpx.Response:
+    def put(self, data: RequestData = None, endpoint: str = "") -> httpx.Response:
         r = httpx.put(
             url=f"{self.url}{endpoint}",
             auth=self.auth,
@@ -71,7 +71,9 @@ class ShipStationHTTP(ShipStationBase):
             r.raise_for_status()
         return r
 
-    def delete(self, payload: Any = None, endpoint: str = "") -> httpx.Response:
+    def delete(
+        self, payload: QueryParamTypes = None, endpoint: str = ""
+    ) -> httpx.Response:
         r = httpx.delete(
             url=f"{self.url}{endpoint}",
             auth=self.auth,

@@ -1,11 +1,9 @@
 import json
 from datetime import date, datetime
 from decimal import Decimal
-from typing import Any
 from uuid import UUID
 
-from attr import attrib, attrs
-
+from attrs import define
 from shipstation.base import ShipStationBase
 from shipstation.constants import *
 
@@ -39,7 +37,7 @@ __all__ = [
 ]
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationCustomsItem(ShipStationBase):
     customs_item_id: str | None = None
     description: str | None = None
@@ -49,21 +47,21 @@ class ShipStationCustomsItem(ShipStationBase):
     country_of_origin: str | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationInsuranceOptions(ShipStationBase):
     provider: str | None = None
     insure_shipment: bool | None = None
     insured_value: Decimal | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationInternationalOptions(ShipStationBase):
     customs_items: list[ShipStationCustomsItem] | None = None
     contents: str | None = None
     non_delivery: str | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationAdvancedOptions(ShipStationBase):
     warehouse_id: str | None = None
     non_machinable: bool | None = None
@@ -84,14 +82,14 @@ class ShipStationAdvancedOptions(ShipStationBase):
     parent_id: str | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationWeight(ShipStationBase):
     units: str | None = None
     value: Decimal | None = None
     weight_units: str | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationContainer(ShipStationBase):
     units: str | None = None
     length: Decimal | None = None
@@ -111,19 +109,19 @@ class ShipStationContainer(ShipStationBase):
         self._weight = ShipStationWeight(**val)
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationProductTag(ShipStationBase):
     tag_id: int | None = None
     name: str | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationProductCategory(ShipStationBase):
     category_id: int | None = None
     name: str | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationItem(ShipStationBase):
     aliases: list[str] | None = None
     product_id: int | None = None
@@ -159,7 +157,7 @@ class ShipStationItem(ShipStationBase):
     tags: list[ShipStationProductTag] | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationAddress(ShipStationBase):
     name: str | None = None
     company: str | None = None
@@ -175,20 +173,20 @@ class ShipStationAddress(ShipStationBase):
     address_verified: bool | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationOrderTag(ShipStationBase):
     tag_id: int | None = None
     name: str | None = None
     color: str | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationItemOption(ShipStationBase):
     name: str | None = None
     value: str | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationOrderItem(ShipStationBase):
     order_item_id: str | None = None
     line_item_key: str | None = None
@@ -210,7 +208,7 @@ class ShipStationOrderItem(ShipStationBase):
     modify_date: datetime | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationOrder(ShipStationBase):
     # Required attributes
     order_number: str | None = None
@@ -272,13 +270,13 @@ class ShipStationOrder(ShipStationBase):
     test_label: bool | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationStatusMapping(ShipStationBase):
     order_status: str | None = None
     status_key: str | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationStore(ShipStationBase):
     store_id: str | None = None
     store_name: str | None = None
@@ -300,7 +298,7 @@ class ShipStationStore(ShipStationBase):
     status_mappings: list[ShipStationStatusMapping] | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationWarehouse(ShipStationBase):
     create_date: date | None = None
     ext_inventory_identity: str | None = None
@@ -313,7 +311,7 @@ class ShipStationWarehouse(ShipStationBase):
     warehouse_name: str | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationWebhook(ShipStationBase):
     active: bool | None = None
     is_label_apihook: bool | None = None
@@ -346,14 +344,14 @@ class ShipStationWebhook(ShipStationBase):
         )
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationUser(ShipStationBase):
     name: str | None = None
     user_id: UUID | None = None
     user_name: str | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationMarketplace(ShipStationBase):
     can_confirm_shipments: bool | None = None
     can_refresh: bool | None = None
@@ -363,7 +361,7 @@ class ShipStationMarketplace(ShipStationBase):
     supports_custom_statuses: bool | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationMarketplaceUsername(ShipStationBase):
     create_date: date | None = None
     customer_id: int | None = None
@@ -374,7 +372,7 @@ class ShipStationMarketplaceUsername(ShipStationBase):
     username: str | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationCustomer(ShipStationBase):
     address_verified: bool | None = None
     city: str | None = None
@@ -391,10 +389,10 @@ class ShipStationCustomer(ShipStationBase):
     state: str | None = None
     street1: str | None = None
     street2: str | None = None
-    tags: list[Any] | None = None
+    tags: list | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationCarrier(ShipStationBase):
     account_number: str | None = None
     balance: Decimal | None = None
@@ -406,7 +404,7 @@ class ShipStationCarrier(ShipStationBase):
     shipping_provider_id: str | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationCarrierPackage(ShipStationBase):
     carrier_code: str | None = None
     code: str | None = None
@@ -415,7 +413,7 @@ class ShipStationCarrierPackage(ShipStationBase):
     name: str | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationCarrierService(ShipStationBase):
     carrier_code: str | None = None
     code: str | None = None
@@ -424,7 +422,7 @@ class ShipStationCarrierService(ShipStationBase):
     name: str | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationFulfillment(ShipStationBase):
     fulfillment_id: str | None = None
     order_id: str | None = None
@@ -447,7 +445,7 @@ class ShipStationFulfillment(ShipStationBase):
     ship_to: ShipStationAddress | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationRateOptions(ShipStationBase):
     carrier_code: str | None = None
     service_code: str | None = None
@@ -463,7 +461,7 @@ class ShipStationRateOptions(ShipStationBase):
     residential: bool | None = None
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class ShipStationRate(ShipStationBase):
     other_cost: Decimal | None = None
     service_code: str | None = None

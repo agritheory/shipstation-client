@@ -1,12 +1,10 @@
+from typing import Any
+
 import base64
-import datetime
 import json
 from collections.abc import Sequence
 from decimal import Decimal
 from io import BytesIO
-from typing import Any
-
-import requests
 
 from shipstation.base import ShipStationBase
 from shipstation.constants import *
@@ -44,7 +42,7 @@ class ShipStation(ShipStationHTTP):
         return ShipStationOrder().json(r.json(parse_float=Decimal))
 
     # refactor
-    def list_orders(self, parameters: dict[str, Any] = {}) -> Page:
+    def list_orders(self, parameters: dict[str] = {}) -> Page:
         self.require_type(parameters, dict)
         invalid_keys = set(parameters.keys()).difference(ORDER_LIST_PARAMETERS)
         if invalid_keys:
@@ -153,7 +151,7 @@ class ShipStation(ShipStationHTTP):
             r.text
         )  # TODO: switch to parse float and test deserialization
 
-    def list_products(self, parameters: dict[str, Any] = {}) -> Page:
+    def list_products(self, parameters: dict[str] = {}) -> Page:
         return Page(
             type=ShipStationItem,
             key="products",

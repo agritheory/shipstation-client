@@ -1,12 +1,13 @@
+from typing import Any, NoReturn, Union
+
 import json
 import re
 from collections.abc import Iterable
 from datetime import date, datetime
 from decimal import Decimal
-from typing import Any, NoReturn, Union
 from uuid import UUID
 
-import cattr
+from cattrs import Converter
 from dateutil import parser
 
 snake_case_regex = re.compile("([a-z0-9])([A-Z])")
@@ -41,9 +42,7 @@ class ShipStationBase:
         return data
 
     @classmethod
-    def convert_snake_case(
-        self, data: Iterable[Any]
-    ) -> dict[str, Any] | list[Any] | Any:
+    def convert_snake_case(self, data: Iterable[Any]) -> dict[str] | list[Any] | Any:
         if isinstance(data, dict):
             new_dict = {}
             for key, value in data.items():
@@ -78,13 +77,11 @@ class ShipStationBase:
         if value not in other:
             raise AttributeError(f"'{value}' is not one of {other}")
 
-    def _validate_parameters(
-        self, parameters: Any, valid_parameters: Any
-    ) -> dict[str, Any]:
+    def _validate_parameters(self, parameters: Any, valid_parameters: Any) -> dict[str]:
         return {self.to_camel_case(key): value for key, value in parameters.items()}
 
     def json(
-        self, json_str: None | str | dict[str, Any] = None
+        self, json_str: None | str | dict[str] = None
     ) -> Union[Any, "ShipStationBase"]:
         if not json_str:
             return json.dumps(self.convert_snake_case(self._unstructure()))
@@ -97,9 +94,7 @@ class ShipStationBase:
         )
 
     def _unstructure(self) -> Any:
-        conv = cattr.Converter(  # type: ignore
-            unstruct_strat=cattr.UnstructureStrategy.AS_DICT
-        )
+        conv = Converter()
         conv.register_unstructure_hook(Decimal, lambda d: str(d))
         conv.register_unstructure_hook(datetime, lambda d: d.isoformat())
         conv.register_unstructure_hook(UUID, lambda d: str(d))
@@ -107,9 +102,7 @@ class ShipStationBase:
         return conv.unstructure(self)
 
     def _structure(self, json_input: Iterable[Any]) -> Any:
-        conv = cattr.Converter(  # type: ignore
-            unstruct_strat=cattr.UnstructureStrategy.AS_DICT
-        )
+        conv = Converter()
         conv.register_structure_hook(Decimal, lambda d, t: Decimal(d))
         conv.register_structure_hook(datetime, lambda dt, t: parser.parse(dt))
         conv.register_structure_hook(date, lambda dt, t: parser.parse(dt))

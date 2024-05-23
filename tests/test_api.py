@@ -1,21 +1,18 @@
 import datetime
-import json
-import os
 from decimal import Decimal
 from uuid import UUID
 
-import httpx
 import pytest
-import respx
-
 from conftest import *
+from httpx import HTTPStatusError
+from respx import MockRouter, mock
 from shipstation.api import ShipStation
 from shipstation.models import *
 from shipstation.pagination import Page
 
 
-@respx.mock
-def test_get_carrier(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_get_carrier(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["get_carrier"]
     response = ss.get_carrier("stamps_com")
     assert request.called
@@ -25,8 +22,8 @@ def test_get_carrier(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
     assert response.account_number == "example"
 
 
-@respx.mock
-def test_get_customer(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_get_customer(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["get_customer"]
     response = ss.get_customer(123456789)
     assert request.called
@@ -37,8 +34,8 @@ def test_get_customer(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
     assert response.marketplace_usernames[0].customer_id == 123456789
 
 
-@respx.mock
-def test_get_order(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_get_order(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["get_order"]
     response = ss.get_order(123456789)
     assert request.called
@@ -50,8 +47,8 @@ def test_get_order(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
     assert response.create_date == datetime.datetime(2015, 6, 30, 15, 20, 26, 723000)
 
 
-@respx.mock
-def test_get_product(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_get_product(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["get_product"]
     response = ss.get_product(123456789)
     assert request.called
@@ -59,8 +56,8 @@ def test_get_product(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
     assert response.create_date == datetime.datetime(2016, 10, 31, 7, 43, 0, 203000)
 
 
-@respx.mock
-def test_get_rates(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_get_rates(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["get_rates"]
     response = ss.get_rates(
         ShipStationRateOptions(
@@ -77,8 +74,8 @@ def test_get_rates(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
     assert response[0].shipment_cost == Decimal("3.2")
 
 
-@respx.mock
-def test_get_stores(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_get_stores(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["get_store"]
     response = ss.get_store(12345)
     assert request.called
@@ -87,8 +84,8 @@ def test_get_stores(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
     assert response.account_name == "GHI123456789"
 
 
-@respx.mock
-def test_get_warehouse(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_get_warehouse(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["get_warehouse"]
     response = ss.get_warehouse(456789)
     assert request.called
@@ -97,8 +94,8 @@ def test_get_warehouse(ss: ShipStation, mocked_api: respx.MockTransport) -> None
     assert response.warehouse_name == "Test Company"
 
 
-@respx.mock
-def test_list_carriers(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_carriers(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_carriers"]
     response = ss.list_carriers()
     assert request.called
@@ -107,8 +104,8 @@ def test_list_carriers(ss: ShipStation, mocked_api: respx.MockTransport) -> None
     assert response[0].balance == Decimal("15.01")
 
 
-@respx.mock
-def test_list_tags(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_tags(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_tags"]
     response = ss.list_tags()
     assert request.called
@@ -117,8 +114,8 @@ def test_list_tags(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
     assert response[0].name == "Amazon Prime Order"
 
 
-@respx.mock
-def test_list_marketplaces(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_marketplaces(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_marketplaces"]
     response = ss.list_marketplaces()
     assert request.called
@@ -127,13 +124,11 @@ def test_list_marketplaces(ss: ShipStation, mocked_api: respx.MockTransport) -> 
     assert response[1].name == "Acumatica"
 
 
-@respx.mock
-def test_list_orders(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_orders(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_orders"]
     response = ss.list_orders()
     assert request.called
-    # for order in response:
-    print("items", response[0].items)
     assert isinstance(response[0], ShipStationOrder)
     assert isinstance(response[0].ship_to, ShipStationAddress)
     # assert isinstance(response[0].items[0], ShipStationOrderItem)
@@ -149,8 +144,8 @@ def test_list_orders(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
     assert response[1].shipping_amount == Decimal("0.0")
 
 
-@respx.mock
-def test_list_stores(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_stores(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_stores"]
     response = ss.list_stores(marketplace_id=2)
     assert request.called
@@ -159,8 +154,8 @@ def test_list_stores(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
     assert response[1].account_name == "DEF123456789"
 
 
-@respx.mock
-def test_list_users(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_users(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_users"]
     response = ss.list_users()
     assert request.called
@@ -170,8 +165,8 @@ def test_list_users(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
     assert response[1].user_id == UUID("0dbc3f54-5cd4-4054-b2b5-92427e18d6cd")
 
 
-@respx.mock
-def test_list_warehouses(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_warehouses(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_warehouses"]
     response = ss.list_warehouses()
     assert request.called
@@ -183,8 +178,8 @@ def test_list_warehouses(ss: ShipStation, mocked_api: respx.MockTransport) -> No
 
 
 @pytest.mark.skip
-@respx.mock
-def test_list_webhooks(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_webhooks(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_webhooks"]
     response = ss.list_webhooks()
     assert request.called
@@ -195,8 +190,8 @@ def test_list_webhooks(ss: ShipStation, mocked_api: respx.MockTransport) -> None
     # assert response[0].origin_address.street2 == "Unit 4"
 
 
-@respx.mock
-def test_list_services(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_services(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_services"]
     response = ss.list_services(carrier_code="stamps_com")
     assert request.called
@@ -204,8 +199,8 @@ def test_list_services(ss: ShipStation, mocked_api: respx.MockTransport) -> None
     assert response[1].international is False
 
 
-@respx.mock
-def test_list_shipments(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_shipments(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_shipments"]
     response = ss.list_shipments()
     assert request.called
@@ -219,15 +214,15 @@ def test_list_shipments(ss: ShipStation, mocked_api: respx.MockTransport) -> Non
     assert response[0].tracking_number == "9400111899562764298812"
 
 
-@respx.mock
-def test_list_shipments_error(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
-    request = mocked_api["list_shipments_error"]
-    with pytest.raises(httpx.HTTPStatusError):
+@mock
+def test_list_shipments_error(ss: ShipStation, mocked_api: MockRouter) -> None:
+    request = mocked_api["list_shipments"]
+    with pytest.raises(HTTPStatusError):
         ss.list_shipments()
 
 
-@respx.mock
-def test_list_packages(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_packages(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_packages"]
     response = ss.list_packages(carrier_code="stamps_com")
     assert request.called
@@ -237,8 +232,8 @@ def test_list_packages(ss: ShipStation, mocked_api: respx.MockTransport) -> None
     assert response[1].code == "flat_rate_envelope"
 
 
-@respx.mock
-def test_list_customers(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_customers(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_customers"]
     response = ss.list_customers()
     assert request.called
@@ -249,8 +244,8 @@ def test_list_customers(ss: ShipStation, mocked_api: respx.MockTransport) -> Non
     assert response[0].marketplace_usernames[0].customer_id == 123456789
 
 
-@respx.mock
-def test_list_fulfillments(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_fulfillments(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_fulfillments"]
     response = ss.list_fulfillments()
     assert request.called
