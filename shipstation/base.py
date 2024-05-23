@@ -1,8 +1,9 @@
 import json
 import re
-import typing
+from collections.abc import Iterable
 from datetime import date, datetime
 from decimal import Decimal
+from typing import Any, NoReturn, Union
 from uuid import UUID
 
 import cattr
@@ -23,9 +24,7 @@ class ShipStationBase:
         return snake_case_regex.sub(r"\1_\2", name).lower()
 
     @classmethod
-    def convert_camel_case(
-        self, data: typing.Iterable[typing.Any]
-    ) -> typing.Iterable[typing.Any]:
+    def convert_camel_case(self, data: Iterable[Any]) -> Iterable[Any]:
         if isinstance(data, dict):
             new_dict = {}
             for key, value in data.items():
@@ -43,10 +42,8 @@ class ShipStationBase:
 
     @classmethod
     def convert_snake_case(
-        self, data: typing.Iterable[typing.Any]
-    ) -> typing.Union[
-        typing.Dict[str, typing.Any], typing.List[typing.Any], typing.Any
-    ]:
+        self, data: Iterable[Any]
+    ) -> dict[str, Any] | list[Any] | Any:
         if isinstance(data, dict):
             new_dict = {}
             for key, value in data.items():
@@ -63,13 +60,13 @@ class ShipStationBase:
             return new_list
         return data
 
-    def require_attribute(self, attribute: str) -> typing.NoReturn:  # type: ignore
+    def require_attribute(self, attribute: str) -> NoReturn:  # type: ignore
         if not getattr(self, attribute):
             raise AttributeError(f"'{attribute}' is a required attribute")
 
     def require_type(  # type: ignore
-        self, item: typing.Any, required_type: typing.Any, message: str = ""
-    ) -> typing.NoReturn:
+        self, item: Any, required_type: Any, message: str = ""
+    ) -> NoReturn:
         if item is None:
             pass
         if not isinstance(item, required_type):
@@ -77,20 +74,18 @@ class ShipStationBase:
                 raise AttributeError(message)
             raise AttributeError(f"must be of type {required_type}")
 
-    def require_membership(  # type: ignore
-        self, value: typing.Any, other: typing.Any
-    ) -> typing.NoReturn:
+    def require_membership(self, value: Any, other: Any) -> NoReturn:  # type: ignore
         if value not in other:
             raise AttributeError(f"'{value}' is not one of {other}")
 
     def _validate_parameters(
-        self, parameters: typing.Any, valid_parameters: typing.Any
-    ) -> typing.Dict[str, typing.Any]:
+        self, parameters: Any, valid_parameters: Any
+    ) -> dict[str, Any]:
         return {self.to_camel_case(key): value for key, value in parameters.items()}
 
     def json(
-        self, json_str: typing.Union[None, str, typing.Dict[str, typing.Any]] = None
-    ) -> typing.Union[typing.Any, "ShipStationBase"]:
+        self, json_str: None | str | dict[str, Any] = None
+    ) -> Union[Any, "ShipStationBase"]:
         if not json_str:
             return json.dumps(self.convert_snake_case(self._unstructure()))
         if isinstance(json_str, dict):
@@ -101,7 +96,7 @@ class ShipStationBase:
             )
         )
 
-    def _unstructure(self) -> typing.Any:
+    def _unstructure(self) -> Any:
         conv = cattr.Converter(  # type: ignore
             unstruct_strat=cattr.UnstructureStrategy.AS_DICT
         )
@@ -111,7 +106,7 @@ class ShipStationBase:
         # might need a date to datetime conversion hook
         return conv.unstructure(self)
 
-    def _structure(self, json_input: typing.Iterable[typing.Any]) -> typing.Any:
+    def _structure(self, json_input: Iterable[Any]) -> Any:
         conv = cattr.Converter(  # type: ignore
             unstruct_strat=cattr.UnstructureStrategy.AS_DICT
         )

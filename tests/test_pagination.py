@@ -16,25 +16,31 @@ def mocked_pagination() -> respx.MockTransport:
     base_url = "https://ssapi.shipstation.com"
     with respx.mock(base_url=base_url, assert_all_called=False) as respx_mock:
         respx_mock.get(
-            "/products", content=test_list_products_first,
+            "/products",
+            content=test_list_products_first,
         )
         respx_mock.get(
-            "/products?page=2", content=test_list_products_second,
+            "/products?page=2",
+            content=test_list_products_second,
         )
         respx_mock.get(
-            "/products?page=3", content=test_list_products_third,
+            "/products?page=3",
+            content=test_list_products_third,
         )
         respx_mock.get(
             "/products", content=list_products_none, alias="list_products_none"
         )
         respx_mock.get(
-            "/products?pageSize=3", content=test_list_products_first,
+            "/products?pageSize=3",
+            content=test_list_products_first,
         )
         respx_mock.get(
-            "/products?pageSize=3&page=2", content=test_list_products_second,
+            "/products?pageSize=3&page=2",
+            content=test_list_products_second,
         )
         respx_mock.get(
-            "/products?pageSize=3&page=3", content=test_list_products_third,
+            "/products?pageSize=3&page=3",
+            content=test_list_products_third,
         )
         yield respx_mock
 

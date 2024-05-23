@@ -17,7 +17,7 @@ def _setup():
     )
     setup_data["author"] = author[1]
     setup_data["author_email"] = author[2]
-    setup_data["python_requires"] = ">=3.8"
+    setup_data["python_requires"] = ">=3.10"
     setup_data["install_requires"] = [
         f"{key}{value.replace('^', '>=')}"
         for key, value in pyproject["tool"]["poetry"]["dependencies"].items()

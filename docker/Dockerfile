@@ -1,4 +1,4 @@
-FROM python:3.7-slim-buster
+FROM python:3.10-slim-bullseye
 
 ENV LANG=C.UTF-8 \
   LC_ALL=C.UTF-8 \

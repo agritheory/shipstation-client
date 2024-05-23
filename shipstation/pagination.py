@@ -1,8 +1,9 @@
-import typing
-
-from attr import attrib, attrs
+from collections.abc import Callable
 from decimal import Decimal
 from functools import partial
+from typing import Any
+
+from attr import attrib, attrs
 from httpx import Response
 
 from shipstation.base import ShipStationBase
@@ -12,9 +13,9 @@ from shipstation.base import ShipStationBase
 class Page:
     key: str
     type: type
-    call: typing.Optional[typing.Tuple[typing.Callable, typing.Dict[str, typing.Any]]]
-    results: typing.List[ShipStationBase] = []
-    params: typing.Optional[typing.Dict[str, typing.Any]] = None
+    call: tuple[Callable, dict[str, Any]] | None
+    results: list[ShipStationBase] = []
+    params: dict[str, Any] | None = None
     page: int = 0
     pages: int = 0
     total: int = 0
@@ -40,7 +41,7 @@ class Page:
     def __iter__(self) -> "Page":
         return self
 
-    def __next__(self) -> typing.Optional[ShipStationBase]:
+    def __next__(self) -> ShipStationBase | None:
         if not self.results:
             raise StopIteration
         if self.results and self._index == len(self.results):

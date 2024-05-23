@@ -1,77 +1,69 @@
-[build-system]
-requires = ["poetry>=1.0"]
-build-backend = "poetry.masonry.api"
-
 [tool.poetry]
 name = "shipstation-client"
 version = "0.1.0"
 description = 'Python bindings for the ShipStation API'
 readme = "README.md"
-authors = [
-  "AgriTheory <hello@agritheory.com>"
-]
+authors = ["AgriTheory <hello@agritheory.com>"]
 license = "MIT"
 repository = "https://github.com/agritheory/shipstation-client"
 homepage = "https://github.com/agritheory/shipstation-client"
-
 keywords = ['shipstation']
-
-classifiers=[
+packages = [{ include = "shipstation" }]
+classifiers = [
   "Environment :: Web Environment",
   "Intended Audience :: Developers",
   "License :: OSI Approved :: MIT License",
   "Topic :: Software Development :: Libraries :: Python Modules",
   "Operating System :: OS Independent",
-  "Programming Language :: Python :: 2.7",
-  "Programming Language :: Python :: 3.5",
-  "Programming Language :: Python :: 3.6",
-  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
   "Programming Language :: Python",
   "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
   "Topic :: Internet :: WWW/HTTP",
 ]
 
-packages = [
-    { include = "shipstation" }
-]
+[build-system]
+requires = ["poetry>=1.0"]
+build-backend = "poetry.masonry.api"
 
 [tool.poetry.dependencies]
-python = "^3.6.1"
-httpx = "^0.13.3"
+python = ">=3.10,<3.13"
 attrs = "^19.3.0"
 cattrs = "^1.0.0"
+httpx = "^0.13.3"
+importlib_metadata = {version = "^4.6.0", python = "<3.10"}
 python-dateutil = "^2.8.1"
-importlib_metadata = {version = "^1.6.0", python = "<3.8"}
 
 [tool.poetry.dev-dependencies]
+bandit = "^1.6.2"
+black = "^24.4.2"
 darglint = "^1.4.0"
 isort = {extras = ["pyproject"], version = "^4.3.21"}
-pyupgrade = "^2.4.4"
-black = "^19.10b0"
-mypy = "^0.780"
-bandit = "^1.6.2"
-safety = "^1.9.0"
-pytest = "^5.4.3"
-pylint = "^2.5.2"
+mypy = "^1.10.0"
+pre-commit = "^2.4.0"
 pydocstyle = "^5.0.2"
+pylint = "^2.5.2"
+pytest = "^5.4.3"
 pytest-asyncio = "^0.12.0"
-python-dotenv = "^0.13.0"
 pytest-cov = "^2.10.0"
 pytest-httpx = "^0.4.0"
-pre-commit = "^2.4.0"
-respx = "^0.11.1"
 pytest-mypy = "^0.6.2"
+python-dotenv = "^0.13.0"
+pyupgrade = "^2.4.4"
+respx = "^0.11.1"
+safety = "^1.9.0"
 
 [tool.black]
 line-length = 88
-target-version = ["py36"]
+target-version = ["py310"]
 
 [tool.isort]
-known_typing = "typing,types,typing_extensions,mypy,mypy_extensions"
-sections = "FUTURE,TYPING,STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
-include_trailing_comma = true
 default_section = "FIRSTPARTY"
-multi_line_output = 3
 force_grid_wrap = 0
-use_parentheses = true
+include_trailing_comma = true
+known_typing = "typing,types,typing_extensions,mypy,mypy_extensions"
 line_length = 80
+multi_line_output = 3
+sections = "TYPING,STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
+use_parentheses = true

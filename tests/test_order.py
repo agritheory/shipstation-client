@@ -1,10 +1,9 @@
+import datetime
 import json
 from decimal import Decimal
-import datetime
 
 import pytest
 import respx
-
 
 from conftest import ss
 from shipstation.api import ShipStation
