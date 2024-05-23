@@ -3,7 +3,8 @@ from datetime import date, datetime
 from decimal import Decimal
 from uuid import UUID
 
-from attrs import define
+from attrs import define, field
+from attrs.setters import frozen
 from shipstation.base import ShipStationBase
 from shipstation.constants import *
 
@@ -39,17 +40,17 @@ __all__ = [
 
 @define(auto_attribs=True)
 class ShipStationCustomsItem(ShipStationBase):
-    customs_item_id: str | None = None
+    country_of_origin: str | None = None
+    customs_item_id: str | None = field(default=None, on_setattr=frozen)
     description: str | None = None
+    harmonized_tariff_code: str | None = None
     quantity: Decimal | None = None
     value: Decimal | None = None
-    harmonized_tariff_code: str | None = None
-    country_of_origin: str | None = None
 
 
 @define(auto_attribs=True)
 class ShipStationInsuranceOptions(ShipStationBase):
-    provider: str | None = None
+    provider: PROVIDER_VALUES | None = None
     insure_shipment: bool | None = None
     insured_value: Decimal | None = None
 
@@ -57,41 +58,41 @@ class ShipStationInsuranceOptions(ShipStationBase):
 @define(auto_attribs=True)
 class ShipStationInternationalOptions(ShipStationBase):
     customs_items: list[ShipStationCustomsItem] | None = None
-    contents: str | None = None
-    non_delivery: str | None = None
+    contents: CONTENTS_VALUES | None = None
+    non_delivery: NON_DELIVERY_OPTIONS | None = None
 
 
 @define(auto_attribs=True)
 class ShipStationAdvancedOptions(ShipStationBase):
-    warehouse_id: str | None = None
-    non_machinable: bool | None = None
-    saturday_delivery: str | None = None
-    contains_alcohol: str | None = None
-    store_id: str | None = None
+    bill_to_account: str | None = None
+    bill_to_country_code: str | None = None
+    bill_to_my_other_account: str | None = None
+    bill_to_party: BILL_TO_PARTY_VALUES | None = None
+    bill_to_postal_code: str | None = None
+    contains_alcohol: bool | None = None
     custom_field1: str | None = None
     custom_field2: str | None = None
     custom_field3: str | None = None
+    merged_ids: list[Decimal] | None = field(default=None, on_setattr=frozen)
+    merged_or_split: bool | None = field(default=None, on_setattr=frozen)
+    non_machinable: bool | None = None
+    parent_id: Decimal | None = field(default=None, on_setattr=frozen)
+    saturday_delivery: bool | None = None
     source: str | None = None
-    merged_or_split: str | None = None
-    merged_ids: list[str] | None = None
-    bill_to_party: str | None = None
-    bill_to_account: str | None = None
-    bill_to_postal_code: str | None = None
-    bill_to_country_code: str | None = None
-    bill_to_my_other_account: bool | None = None
-    parent_id: str | None = None
+    store_id: Decimal | None = None
+    warehouse_id: Decimal | None = None
 
 
 @define(auto_attribs=True)
 class ShipStationWeight(ShipStationBase):
-    units: str | None = None
+    units: WEIGHT_UNIT_OPTIONS | None = None
     value: Decimal | None = None
-    weight_units: str | None = None
+    weight_units: Decimal | None = field(default=None, on_setattr=frozen)
 
 
 @define(auto_attribs=True)
 class ShipStationContainer(ShipStationBase):
-    units: str | None = None
+    units: DIMENSIONS_UNIT_OPTIONS | None = None
     length: Decimal | None = None
     width: Decimal | None = None
     height: Decimal | None = None
@@ -123,54 +124,54 @@ class ShipStationProductCategory(ShipStationBase):
 
 @define(auto_attribs=True)
 class ShipStationItem(ShipStationBase):
-    aliases: list[str] | None = None
-    product_id: int | None = None
-    sku: str | None = None
-    name: str | None = None
-    price: Decimal | None = None
-    default_cost: Decimal | None = None
-    length: Decimal | None = None
-    width: Decimal | None = None
-    height: Decimal | None = None
-    weight_oz: Decimal | None = None
-    internal_notes: str | None = None
-    fulfillment_sku: str | None = None
-    create_date: datetime | None = None
-    modify_date: datetime | None = None
     active: bool | None = None
-    product_category: ShipStationProductCategory | None = None
-    product_type: str | None = None
-    warehouse_location: str | None = None
-    default_carrier_code: str | None = None
-    default_service_code: str | None = None
-    default_package_code: str | None = None
-    default_intl_carrier_code: str | None = None
-    default_intl_service_code: str | None = None
-    default_intl_package_code: str | None = None
-    default_confirmation: str | None = None
-    default_intl_confirmation: str | None = None
-    customs_description: str | None = None
-    customs_value: Decimal | None = None
-    customs_tariff_no: str | None = None
+    aliases: list[str] | None = None
+    create_date: datetime | None = field(default=None, on_setattr=frozen)
     customs_country_code: str | None = None
+    customs_description: str | None = None
+    customs_tariff_no: str | None = None
+    customs_value: Decimal | None = None
+    default_carrier_code: str | None = None
+    default_confirmation: str | None = None
+    default_cost: Decimal | None = None
+    default_intl_carrier_code: str | None = None
+    default_intl_confirmation: str | None = None
+    default_intl_package_code: str | None = None
+    default_intl_service_code: str | None = None
+    default_package_code: str | None = None
+    default_service_code: str | None = None
+    fulfillment_sku: str | None = None
+    height: Decimal | None = None
+    internal_notes: str | None = None
+    length: Decimal | None = None
+    modify_date: datetime | None = field(default=None, on_setattr=frozen)
+    name: str | None = None
     no_customs: bool | None = None
+    price: Decimal | None = None
+    product_category: ShipStationProductCategory | None = None
+    product_id: int | None = field(default=None, on_setattr=frozen)
+    product_type: str | None = None
+    sku: str | None = None
     tags: list[ShipStationProductTag] | None = None
+    warehouse_location: str | None = None
+    weight_oz: Decimal | None = None
+    width: Decimal | None = None
 
 
 @define(auto_attribs=True)
 class ShipStationAddress(ShipStationBase):
-    name: str | None = None
+    address_verified: ADDRESS_VERIFIED_VALUES | None = None
+    city: str | None = None
     company: str | None = None
+    country: str | None = None
+    name: str | None = None
+    phone: str | None = None
+    postal_code: str | None = None
+    residential: bool | None = None
+    state: str | None = None
     street1: str | None = None
     street2: str | None = None
     street3: str | None = None
-    city: str | None = None
-    state: str | None = None
-    postal_code: str | None = None
-    country: str | None = None
-    phone: str | None = None
-    residential: bool | None = None
-    address_verified: bool | None = None
 
 
 @define(auto_attribs=True)
@@ -188,86 +189,85 @@ class ShipStationItemOption(ShipStationBase):
 
 @define(auto_attribs=True)
 class ShipStationOrderItem(ShipStationBase):
-    order_item_id: str | None = None
-    line_item_key: str | None = None
-    sku: str | None = None
-    name: str | None = None
-    image_url: str | None = None
-    weight: ShipStationWeight | None = None
-    quantity: int | None = None
-    unit_price: Decimal | None = None
-    tax_amount: Decimal | None = None
-    shipping_amount: Decimal | None = None
-    warehouse_location: str | None = None
-    options: list[ShipStationItemOption] | None = None
-    productId: str | None = None
-    fulfillment_sku: str | None = None
+    name: str
+
     adjustment: bool | None = None
+    create_date: datetime | None = field(default=None, on_setattr=frozen)
+    fulfillment_sku: str | None = None
+    image_url: str | None = None
+    line_item_key: str | None = None
+    modify_date: datetime | None = field(default=None, on_setattr=frozen)
+    options: list[ShipStationItemOption] | None = None
+    order_item_id: str | None = field(default=None, on_setattr=frozen)
+    product_id: Decimal | None = None
+    quantity: Decimal | None = None
+    shipping_amount: Decimal | None = None
+    sku: str | None = None
+    tax_amount: Decimal | None = None
+    unit_price: Decimal | None = None
     upc: str | None = None
-    create_date: datetime | None = None
-    modify_date: datetime | None = None
+    warehouse_location: str | None = None
+    weight: ShipStationWeight | None = None
 
 
 @define(auto_attribs=True)
 class ShipStationOrder(ShipStationBase):
-    # Required attributes
-    order_number: str | None = None
-    order_date: datetime | None = None
-    order_status: str | None = None
-    bill_to: ShipStationAddress | None = None
-    ship_to: ShipStationAddress | None = None
-    # Optional attributes
-    order_key: str | None = None
-    payment_date: str | None = None
-    customer_username: str | None = None
-    customer_email: str | None = None
-    items: list[ShipStationOrderItem] | None = None
-    amount_paid: Decimal | None = None
-    tax_amount: Decimal | None = None
-    shipping_amount: Decimal | None = None
-    customer_notes: str | None = None
-    internal_notes: str | None = None
-    gift: bool | None = None
-    payment_method: str | None = None
-    carrier_code: str | None = None
-    service_code: str | None = None
-    package_code: str | None = None
-    confirmation: str | None = None
-    ship_date: datetime | None = None
-    dimensions: ShipStationContainer | None = None
-    insurance_options: ShipStationInsuranceOptions | None = None
-    international_options: ShipStationInternationalOptions | None = None
     advanced_options: ShipStationAdvancedOptions | None = None
-    tracking_number: str | None = None
-    voided: bool | None = None
-    void_date: datetime | None = None
-    order_id: str | None = None
-    marketplace_notified: bool | None = None
-    warehouse_id: str | None = None
-    user_id: str | None = None
-    label_data: str | None = None
+    amount_paid: Decimal | None = None
     batch_number: str | None = None
-    insurance_cost: Decimal | None = None
+    bill_to: ShipStationAddress | None = None
+    carrier_code: str | None = None
+    confirmation: CONFIRMATION_VALUES | None = None
+    create_date: datetime | None = field(default=None, on_setattr=frozen)
+    customer_email: str | None = None
+    customer_id: str | None = field(default=None, on_setattr=frozen)
+    customer_notes: str | None = None
+    customer_username: str | None = None
+    dimensions: ShipStationContainer | None = None
+    externally_fulfilled_by: str | None = field(default=None, on_setattr=frozen)
+    externally_fulfilled: bool | None = field(default=None, on_setattr=frozen)
     form_data: str | None = None
-    notify_error_message: bool | None = None
-    is_return_label: bool | None = None
-    shipment_id: str | None = None
-    shipment_cost: Decimal | None = None
-    weight: ShipStationWeight | None = None
-    create_date: datetime | None = None
-    modify_date: datetime | None = None
-    shipment_items: str | None = None
-    ship_by_date: str | None = None
-    customer_id: str | None = None
-    order_total: Decimal | None = None
     gift_message: str | None = None
-    requested_shipping_service: str | None = None
+    gift: bool | None = None
     hold_until_date: datetime | None = None
-    tag_ids: list[int] | None = None
-    externally_fulfilled: bool | None = None
-    externally_fulfilled_by: str | None = None
+    insurance_cost: Decimal | None = None
+    insurance_options: ShipStationInsuranceOptions | None = None
+    internal_notes: str | None = None
+    international_options: ShipStationInternationalOptions | None = None
+    is_return_label: bool | None = None
+    items: list[ShipStationOrderItem] | None = None
+    label_data: str | None = None
     label_messages: str | None = None
+    marketplace_notified: bool | None = None
+    modify_date: datetime | None = field(default=None, on_setattr=frozen)
+    notify_error_message: bool | None = None
+    order_date: datetime | None = None
+    order_id: str | None = field(default=None, on_setattr=frozen)
+    order_key: str | None = None
+    order_number: str | None = None
+    order_status: ORDER_STATUS_VALUES | None = None
+    order_total: Decimal | None = field(default=None, on_setattr=frozen)
+    package_code: str | None = None
+    payment_date: datetime | None = None
+    payment_method: str | None = None
+    requested_shipping_service: str | None = None
+    service_code: str | None = None
+    ship_by_date: datetime | None = None
+    ship_date: datetime | None = None
+    ship_to: ShipStationAddress | None = None
+    shipment_cost: Decimal | None = None
+    shipment_id: str | None = None
+    shipment_items: str | None = None
+    shipping_amount: Decimal | None = None
+    tag_ids: list[int] | None = None
+    tax_amount: Decimal | None = None
     test_label: bool | None = None
+    tracking_number: str | None = None
+    user_id: str | None = field(default=None, on_setattr=frozen)
+    void_date: datetime | None = None
+    voided: bool | None = None
+    warehouse_id: str | None = None
+    weight: ShipStationWeight | None = None
 
 
 @define(auto_attribs=True)
@@ -278,24 +278,24 @@ class ShipStationStatusMapping(ShipStationBase):
 
 @define(auto_attribs=True)
 class ShipStationStore(ShipStationBase):
-    store_id: str | None = None
-    store_name: str | None = None
-    marketplace_id: str | None = None
-    marketplace_name: str | None = None
     account_name: str | None = None
+    active: bool | None = None
+    auto_refresh: bool | None = None
+    company_name: str | None = None
+    create_date: date | None = None
     email: str | None = None
     integration_url: str | None = None
-    active: bool | None = None
-    company_name: str | None = None
+    last_refresh_attempt: date | None = None
+    marketplace_id: str | None = None
+    marketplace_name: str | None = None
+    modify_date: date | None = None
     phone: str | None = None
     public_email: str | None = None
-    website: str | None = None
     refresh_date: date | None = None
-    last_refresh_attempt: date | None = None
-    create_date: date | None = None
-    modify_date: date | None = None
-    auto_refresh: bool | None = None
     status_mappings: list[ShipStationStatusMapping] | None = None
+    store_id: str | None = None
+    store_name: str | None = None
+    website: str | None = None
 
 
 @define(auto_attribs=True)
@@ -304,8 +304,8 @@ class ShipStationWarehouse(ShipStationBase):
     ext_inventory_identity: str | None = None
     is_default: bool | None = None
     origin_address: ShipStationAddress | None = None
-    return_address: ShipStationAddress | None = None
     register_fedex_meter: bool | None = None
+    return_address: ShipStationAddress | None = None
     seller_integration_id: str | None = None
     warehouse_id: str | None = None
     warehouse_name: str | None = None
@@ -314,23 +314,23 @@ class ShipStationWarehouse(ShipStationBase):
 @define(auto_attribs=True)
 class ShipStationWebhook(ShipStationBase):
     active: bool | None = None
-    is_label_apihook: bool | None = None
-    web_hook_id: str | None = None
-    seller_id: str | None = None
-    hook_type: str | None = None
-    message_format: str | None = None
-    url: str | None = None
-    name: str | None = None
     bulk_copy_batch_id: str | None = None
     bulk_copy_record_id: str | None = None
-    webhook_logs: str | None = None
+    event: str | None = None
+    friendly_name: str | None = None
+    hook_type: str | None = None
+    is_label_apihook: bool | None = None
+    message_format: str | None = None
+    name: str | None = None
+    resource_type: SUBSCRIBE_TO_WEBHOOK_EVENT_OPTIONS | None = None
+    resource_url: str | None = None
+    seller_id: str | None = None
     seller: str | None = None
     store_id: str | None = None
     target_url: str | None = None
-    event: str | None = None
-    friendly_name: str | None = None
-    resource_url: str | None = None
-    resource_type: str | None = None
+    url: str | None = None
+    web_hook_id: str | None = None
+    webhook_logs: str | None = None
 
     # this doesn't use the typical .json() method so as to not convert it to camel case
     def prepare(self) -> str:
@@ -374,7 +374,7 @@ class ShipStationMarketplaceUsername(ShipStationBase):
 
 @define(auto_attribs=True)
 class ShipStationCustomer(ShipStationBase):
-    address_verified: bool | None = None
+    address_verified: str | None = None
     city: str | None = None
     company: str | None = None
     country_code: str | None = None
@@ -424,41 +424,41 @@ class ShipStationCarrierService(ShipStationBase):
 
 @define(auto_attribs=True)
 class ShipStationFulfillment(ShipStationBase):
-    fulfillment_id: str | None = None
-    order_id: str | None = None
-    order_number: str | None = None
-    user_id: UUID | None = None
-    customer_email: str | None = None
-    tracking_number: str | None = None
-    create_date: datetime | None = None
-    ship_date: datetime | None = None
-    void_date: datetime | None = None
-    delivery_date: datetime | None = None
     carrier_code: str | None = None
+    create_date: datetime | None = None
+    customer_email: str | None = None
+    delivery_date: datetime | None = None
+    fulfillment_fee: Decimal | None = None
+    fulfillment_id: str | None = None
     fulfillment_provider_code: str | None = None
     fulfillment_service_code: str | None = None
-    fulfillment_fee: Decimal | None = None
-    void_requested: bool | None = None
-    voided: bool | None = None
     marketplace_notified: bool | None = None
     notify_error_message: str | None = None
+    order_id: str | None = None
+    order_number: str | None = None
+    ship_date: datetime | None = None
     ship_to: ShipStationAddress | None = None
+    tracking_number: str | None = None
+    user_id: UUID | None = None
+    void_date: datetime | None = None
+    void_requested: bool | None = None
+    voided: bool | None = None
 
 
 @define(auto_attribs=True)
 class ShipStationRateOptions(ShipStationBase):
     carrier_code: str | None = None
-    service_code: str | None = None
-    package_code: str | None = None
+    confirmation: str | None = None
+    dimensions: ShipStationContainer | None = None
     from_postal_code: str | None = None
-    to_state: str | None = None
+    package_code: str | None = None
+    residential: bool | None = None
+    service_code: str | None = None
+    to_city: str | None = None
     to_country: str | None = None
     to_postal_code: str | None = None
-    to_city: str | None = None
+    to_state: str | None = None
     weight: ShipStationWeight | None = None
-    dimensions: ShipStationContainer | None = None
-    confirmation: str | None = None
-    residential: bool | None = None
 
 
 @define(auto_attribs=True)

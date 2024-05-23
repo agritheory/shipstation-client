@@ -1,46 +1,88 @@
+from typing import Literal
+
 __all__ = [
-    "ORDER_STATUS_VALUES",
+    "ADDRESS_VERIFIED_VALUES",
+    "BILL_TO_PARTY_VALUES",
     "CONFIRMATION_VALUES",
-    "ORDER_LIST_PARAMETERS",
-    "CREATE_ORDER_LABEL_OPTIONS",
-    "CUSTOMER_LIST_PARAMETERS",
-    "FULFILLMENT_LIST_PARAMETERS",
-    "SHIPMENT_LIST_PARAMETERS",
-    "CREATE_SHIPMENT_LABEL_OPTIONS",
-    "GET_RATE_OPTIONS",
-    "REQUIRED_RATE_OPTIONS",
     "CONTENTS_VALUES",
-    "NON_DELIVERY_OPTIONS",
-    "UPDATE_STORE_OPTIONS",
-    "SUBSCRIBE_TO_WEBHOOK_OPTIONS",
-    "SUBSCRIBE_TO_WEBHOOK_EVENT_OPTIONS",
-    "WEIGHT_UNIT_OPTIONS",
+    "CREATE_ORDER_LABEL_OPTIONS",
+    "CREATE_SHIPMENT_LABEL_OPTIONS",
     "CREATE_WAREHOUSE_OPTIONS",
+    "CUSTOMER_LIST_PARAMETERS",
+    "DIMENSIONS_UNIT_OPTIONS",
+    "FULFILLMENT_LIST_PARAMETERS",
+    "GET_RATE_OPTIONS",
+    "NON_DELIVERY_OPTIONS",
+    "ORDER_LIST_PARAMETERS",
+    "ORDER_STATUS_VALUES",
+    "PRODUCT_LIST_PARAMETERS",
+    "PROVIDER_VALUES",
+    "REQUIRED_RATE_OPTIONS",
+    "SHIPMENT_LIST_PARAMETERS",
+    "SUBSCRIBE_TO_WEBHOOK_EVENT_OPTIONS",
+    "SUBSCRIBE_TO_WEBHOOK_OPTIONS",
+    "UPDATE_STORE_OPTIONS",
+    "WEIGHT_UNIT_OPTIONS",
 ]
 
-# https://www.shipstation.com/developer-api/#/reference/orders/createupdate-order/create/update-order
+# https://www.shipstation.com/docs/api/orders/create-update-order/
 # orderStatus
-ORDER_STATUS_VALUES = (
+ORDER_STATUS_VALUES = Literal[
     "awaiting_payment",
     "awaiting_shipment",
     "shipped",
     "on_hold",
     "cancelled",
-)
+    "pending_fulfillment",
+]
 
 # TODO: add method for adding confirmation which respects these values.
-# https://www.shipstation.com/developer-api/#/reference/orders/createupdate-order/create/update-order
+# https://www.shipstation.com/docs/api/orders/create-update-order/
 # confirmation
-CONFIRMATION_VALUES = (
+CONFIRMATION_VALUES = Literal[
     "none",
     "delivery",
     "signature",
     "adult_signature",
     "direct_signature",
+]
+
+# https://www.shipstation.com/docs/api/orders/create-update-order/
+# provider
+PROVIDER_VALUES = Literal["shipsurance", "carrier", "provider", "xcover", "parcelguard"]
+
+# https://www.shipstation.com/docs/api/orders/create-update-order/
+# advancedOptions
+BILL_TO_PARTY_VALUES = Literal[
+    "my_account", "my_other_account", "recipient", "third_party"
+]
+
+# https://www.shipstation.com/docs/api/orders/create-update-order/
+# billTo, shipTo
+ADDRESS_VERIFIED_VALUES = Literal[
+    "Address not yet validated",
+    "Address validated successfully",
+    "Address validation warning",
+    "Address validation failed",
+]
+
+# https://www.shipstation.com/docs/api/products/list/
+PRODUCT_LIST_PARAMETERS = (
+    "sku",
+    "name",
+    "product_category_id",
+    "product_type_id",
+    "tag_id",
+    "start_date",
+    "end_date",
+    "show_inactive",
+    "sort_by",
+    "sort_dir",
+    "page",
+    "page_size",
 )
 
-
-# https://www.shipstation.com/developer-api/#/reference/orders/list-orders/list-orders-with-parameters
+# https://www.shipstation.com/docs/api/orders/list-orders/
 ORDER_LIST_PARAMETERS = (
     "customer_name",
     "item_keyword",
@@ -62,7 +104,7 @@ ORDER_LIST_PARAMETERS = (
 )
 
 
-# https://www.shipstation.com/developer-api/#/reference/orders/create-label-for-order/create-label-for-order
+# https://www.shipstation.com/docs/api/orders/create-label/
 CREATE_ORDER_LABEL_OPTIONS = (
     "order_id",
     "carrier_code",
@@ -78,7 +120,7 @@ CREATE_ORDER_LABEL_OPTIONS = (
 )
 
 
-# https://www.shipstation.com/developer-api/#/reference/carriers/list-services/list-customers
+# https://www.shipstation.com/docs/api/customers/list/
 CUSTOMER_LIST_PARAMETERS = (
     "state_code",
     "country_code",
@@ -89,7 +131,7 @@ CUSTOMER_LIST_PARAMETERS = (
     "page_size",
 )
 
-# https://www.shipstation.com/developer-api/#/reference/fulfillments/list-fulfillments/list-fulfillments-with-parameters
+# https://www.shipstation.com/docs/api/fulfillments/list-fulfillments/
 FULFILLMENT_LIST_PARAMETERS = (
     "fulfillment_id",
     "order_id",
@@ -106,7 +148,7 @@ FULFILLMENT_LIST_PARAMETERS = (
     "page_size",
 )
 
-# https://www.shipstation.com/developer-api/#/reference/shipments/list-shipments/list-shipments-with-parameters
+# https://www.shipstation.com/docs/api/shipments/list/
 SHIPMENT_LIST_PARAMETERS = (
     "recipient_name",
     "recipient_country_code",
@@ -129,7 +171,7 @@ SHIPMENT_LIST_PARAMETERS = (
     "page_size",
 )
 
-# https://www.shipstation.com/developer-api/#/reference/shipments/create-shipment-label/create-shipment-label
+# https://www.shipstation.com/docs/api/shipments/create-label/
 CREATE_SHIPMENT_LABEL_OPTIONS = (
     "carrier_code",
     "service_code",
@@ -146,7 +188,7 @@ CREATE_SHIPMENT_LABEL_OPTIONS = (
     "test_label",
 )
 
-# https://www.shipstation.com/developer-api/#/reference/shipments/get-rates/get-rates
+# https://www.shipstation.com/docs/api/shipments/get-rates/
 GET_RATE_OPTIONS = (
     "carrier_code",
     "from_postal_code",
@@ -170,13 +212,17 @@ REQUIRED_RATE_OPTIONS = (
     "weight",
 )
 
-# https://www.shipstation.com/developer-api/#/reference/model-internationaloptions
-CONTENTS_VALUES = ("merchandise", "documents", "gift", "returned_goods", "sample")
+CREATE_WAREHOUSE_OPTIONS = (
+    "warehouse_name",
+    "origin_address",
+    "return_address",
+    "is_default",
+)
 
-# https://www.shipstation.com/developer-api/#/reference/model-internationaloptions
-NON_DELIVERY_OPTIONS = ("return_to_sender", "treat_as_abandoned")
+WEIGHT_UNIT_OPTIONS = Literal["pounds", "ounces", "grams"]
+DIMENSIONS_UNIT_OPTIONS = Literal["inches", "centimeters"]
 
-# https://www.shipstation.com/developer-api/#/reference/stores/getupdate-store/update-store
+# https://www.shipstation.com/docs/api/stores/update/
 UPDATE_STORE_OPTIONS = (
     "store_id",
     "store_name",
@@ -198,24 +244,19 @@ UPDATE_STORE_OPTIONS = (
     "status_mappings",
 )
 
-# https://www.shipstation.com/developer-api/#/reference/webhooks/subscribe-to-webhook/subscribe-to-webhook
+# https://www.shipstation.com/docs/api/webhooks/subscribe/
 SUBSCRIBE_TO_WEBHOOK_OPTIONS = ("target_url", "event", "store_id", "friendly_name")
-
-# https://www.shipstation.com/developer-api/#/reference/webhooks/subscribe-to-webhook/subscribe-to-webhook
-SUBSCRIBE_TO_WEBHOOK_EVENT_OPTIONS = (
+SUBSCRIBE_TO_WEBHOOK_EVENT_OPTIONS = Literal[
     "ORDER_NOTIFY",
     "ITEM_ORDER_NOTIFY",
     "SHIP_NOTIFY",
     "ITEM_SHIP_NOTIFY",
-)
+    "FULFILLMENT_SHIPPED",
+    "FULFILLMENT_REJECTED",
+]
 
-WEIGHT_UNIT_OPTIONS = ("pounds", "ounces", "grams")
-
-DIMENSIONS_UNIT_OPTIONS = ("inches", "centimeters")
-
-CREATE_WAREHOUSE_OPTIONS = (
-    "warehouse_name",
-    "origin_address",
-    "return_address",
-    "is_default",
-)
+# https://www.shipstation.com/docs/api/models/international-options/
+CONTENTS_VALUES = Literal[
+    "merchandise", "documents", "gift", "returned_goods", "sample"
+]
+NON_DELIVERY_OPTIONS = Literal["return_to_sender", "treat_as_abandoned"]

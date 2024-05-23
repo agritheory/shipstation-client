@@ -1,6 +1,6 @@
-list_tags = [{"color": "#FFFFFF", "name": "Amazon Prime Order", "tagId": 12345}]
+LIST_TAGS = [{"color": "#FFFFFF", "name": "Amazon Prime Order", "tagId": 12345}]
 
-list_marketplaces = [
+LIST_MARKETPLACES = [
     {
         "canConfirmShipments": True,
         "canRefresh": True,
@@ -19,7 +19,7 @@ list_marketplaces = [
     },
 ]
 
-list_stores = [
+LIST_STORES = [
     {
         "accountName": "ABC123456789",
         "active": True,
@@ -82,7 +82,7 @@ list_stores = [
     },
 ]
 
-get_store = {
+GET_STORE = {
     "accountName": "GHI123456789",
     "active": True,
     "autoRefresh": True,
@@ -104,7 +104,7 @@ get_store = {
 }
 
 
-list_users = [
+LIST_USERS = [
     {
         "name": "Merchandising",
         "userId": "57f4e49d-777e-4708-8b26-fd836fc975e6",
@@ -118,13 +118,13 @@ list_users = [
 ]
 
 
-list_warehouses = [
+LIST_WAREHOUSES = [
     {
         "createDate": "2020-04-07T12:03:46.4000000",
         "extInventoryIdentity": "",
         "isDefault": False,
         "originAddress": {
-            "addressVerified": "",
+            "addressVerified": "Address validated successfully",
             "city": "Anywhere",
             "company": "",
             "country": "US",
@@ -139,7 +139,7 @@ list_warehouses = [
         },
         "registerFedexMeter": "",
         "returnAddress": {
-            "addressVerified": "",
+            "addressVerified": "Address validated successfully",
             "city": "Anywhere",
             "company": "Test Company",
             "country": "US",
@@ -161,7 +161,7 @@ list_warehouses = [
         "extInventoryIdentity": "",
         "isDefault": False,
         "originAddress": {
-            "addressVerified": "",
+            "addressVerified": "Address validated successfully",
             "city": "Big City",
             "company": "Another LLC",
             "country": "US",
@@ -176,7 +176,7 @@ list_warehouses = [
         },
         "registerFedexMeter": "",
         "returnAddress": {
-            "addressVerified": "",
+            "addressVerified": "Address validated successfully",
             "city": "Big City",
             "company": "Another LLC",
             "country": "US",
@@ -196,9 +196,9 @@ list_warehouses = [
 ]
 
 
-list_webhooks = {"webhooks": []}
+LIST_WEBHOOKS = {"webhooks": []}
 
-list_carriers = [
+LIST_CARRIERS = [
     {
         "accountNumber": "abc123456789",
         "balance": 15.01,
@@ -221,7 +221,7 @@ list_carriers = [
     },
 ]
 
-list_services = [
+LIST_SERVICES = [
     {
         "carrierCode": "stamps_com",
         "code": "usps_first_class_mail",
@@ -246,7 +246,7 @@ list_services = [
 ]
 
 
-list_packages = [
+LIST_PACKAGES = [
     {
         "carrierCode": "stamps_com",
         "code": "package",
@@ -264,7 +264,7 @@ list_packages = [
 ]
 
 
-list_customers = {
+LIST_CUSTOMERS = {
     "customers": [
         {
             "addressVerified": "Verified",
@@ -326,7 +326,7 @@ list_customers = {
 }
 
 
-get_carrier = {
+GET_CARRIER = {
     "accountNumber": "example",
     "balance": 15.01,
     "code": "stamps_com",
@@ -338,7 +338,7 @@ get_carrier = {
 }
 
 
-get_customer = {
+GET_CUSTOMER = {
     "addressVerified": "Verified",
     "city": "BIG TOWN",
     "company": "",
@@ -368,7 +368,7 @@ get_customer = {
 }
 
 
-list_orders = {
+LIST_ORDERS = {
     "orders": [
         {
             "advancedOptions": {
@@ -576,7 +576,7 @@ list_orders = {
 }
 
 
-get_order = {
+GET_ORDER = {
     "advancedOptions": {
         "billToAccount": None,
         "billToCountryCode": None,
@@ -682,7 +682,7 @@ get_order = {
 }
 
 
-get_product = {
+GET_PRODUCT = {
     "active": True,
     "aliases": None,
     "createDate": "2016-10-31T07:43:00.203",
@@ -718,7 +718,7 @@ get_product = {
 }
 
 
-get_rates = [
+GET_RATES = [
     {
         "otherCost": 0.0,
         "serviceCode": "usps_first_class_mail",
@@ -823,12 +823,12 @@ get_rates = [
     },
 ]
 
-get_warehouse = {
+GET_WAREHOUSE = {
     "createDate": "2020-04-07T12:03:46.4000000",
     "extInventoryIdentity": "",
     "isDefault": False,
     "originAddress": {
-        "addressVerified": "",
+        "addressVerified": "Address validated successfully",
         "city": "Anywhere",
         "company": "",
         "country": "US",
@@ -843,7 +843,7 @@ get_warehouse = {
     },
     "registerFedexMeter": "",
     "returnAddress": {
-        "addressVerified": "",
+        "addressVerified": "Address validated successfully",
         "city": "Anywhere",
         "company": "Test Company",
         "country": "US",
@@ -862,7 +862,7 @@ get_warehouse = {
 }
 
 
-list_products = {
+LIST_PRODUCTS = {
     "page": 1,
     "pages": 1,
     "products": [
@@ -939,7 +939,7 @@ list_products = {
 }
 
 
-list_shipments = {
+LIST_SHIPMENTS = {
     "page": 1,
     "pages": 1,
     "shipments": [
@@ -1113,7 +1113,7 @@ list_shipments = {
 }
 
 
-list_fulfillments = {
+LIST_FULFILLMENTS = {
     "fulfillments": [
         {
             "carrierCode": "UPS",

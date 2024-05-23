@@ -28,8 +28,8 @@ def test_get_customer(ss: ShipStation, mocked_api: MockRouter) -> None:
     response = ss.get_customer(123456789)
     assert request.called
     assert isinstance(response, ShipStationCustomer)
-    assert isinstance(response.address_verified, bool)
-    assert response.address_verified is True
+    assert isinstance(response.address_verified, str)
+    assert response.address_verified == "Verified"
     assert response.create_date == datetime.datetime(2017, 12, 16, 18, 49, 16, 7000)
     assert response.marketplace_usernames[0].customer_id == 123456789
 
@@ -238,8 +238,8 @@ def test_list_customers(ss: ShipStation, mocked_api: MockRouter) -> None:
     response = ss.list_customers()
     assert request.called
     assert isinstance(response[0], ShipStationCustomer)
-    assert isinstance(response[0].address_verified, bool)
-    assert response[0].address_verified is True
+    assert isinstance(response[0].address_verified, str)
+    assert response[0].address_verified == "Verified"
     assert response[0].create_date == datetime.datetime(2017, 12, 16, 18, 49, 16, 7000)
     assert response[0].marketplace_usernames[0].customer_id == 123456789
 

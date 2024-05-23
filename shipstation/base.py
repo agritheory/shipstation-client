@@ -1,4 +1,4 @@
-from typing import Any, NoReturn, Union
+from typing import Any, Union
 
 import json
 import re
@@ -33,7 +33,6 @@ class ShipStationBase:
                 snake_key = self.to_snake_case(key)
                 new_dict[snake_key] = value
             return new_dict
-
         elif isinstance(data, (list, set, tuple)):
             new_list = []
             for value in data:
@@ -59,13 +58,11 @@ class ShipStationBase:
             return new_list
         return data
 
-    def require_attribute(self, attribute: str) -> NoReturn:  # type: ignore
+    def require_attribute(self, attribute: str) -> None:
         if not getattr(self, attribute):
             raise AttributeError(f"'{attribute}' is a required attribute")
 
-    def require_type(  # type: ignore
-        self, item: Any, required_type: Any, message: str = ""
-    ) -> NoReturn:
+    def require_type(self, item: Any, required_type: Any, message: str = "") -> None:
         if item is None:
             pass
         if not isinstance(item, required_type):
@@ -73,7 +70,7 @@ class ShipStationBase:
                 raise AttributeError(message)
             raise AttributeError(f"must be of type {required_type}")
 
-    def require_membership(self, value: Any, other: Any) -> NoReturn:  # type: ignore
+    def require_membership(self, value: Any, other: Any) -> None:
         if value not in other:
             raise AttributeError(f"'{value}' is not one of {other}")
 
