@@ -1,0 +1,31 @@
+name: Pytest
+
+on:
+  pull_request:
+
+jobs:
+  tests:
+    name: Server
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Clone
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Run Tests
+        run: |
+          source env/bin/activate
+          pytest --cov=shipstation --cov-report=xml --disable-warnings -s | tee pytest-coverage.txt
+
+      - name: Pytest coverage comment
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          pytest-coverage-path: /home/runner/pytest-coverage.txt
+          junitxml-path: /home/runner/coverage.xml
