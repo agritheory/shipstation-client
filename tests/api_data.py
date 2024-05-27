@@ -196,7 +196,41 @@ LIST_WAREHOUSES = [
 ]
 
 
-LIST_WEBHOOKS = {"webhooks": []}
+LIST_WEBHOOKS = [
+    {
+        "IsLabelAPIHook": False,
+        "WebHookID": 123,
+        "SellerID": 100000,
+        "StoreID": 12345,
+        "HookType": "ITEM_ORDER_NOTIFY",
+        "MessageFormat": "Json",
+        "Url": "http://example.endpoint/orders",
+        "Name": "My Order Webhook",
+        "BulkCopyBatchID": None,
+        "BulkCopyRecordID": None,
+        "Active": True,
+        "WebhookLogs": [],
+        "Seller": None,
+        "Store": None,
+    },
+    {
+        "IsLabelAPIHook": False,
+        "WebHookID": 456,
+        "SellerID": 100000,
+        "StoreID": 98765,
+        "HookType": "SHIP_NOTIFY",
+        "MessageFormat": "Json",
+        "Url": "https://example.endpoint/shipment",
+        "Name": "My Shipment Webhook",
+        "BulkCopyBatchID": None,
+        "BulkCopyRecordID": None,
+        "Active": True,
+        "WebhookLogs": [],
+        "Seller": None,
+        "Store": None,
+    },
+]
+
 
 LIST_CARRIERS = [
     {

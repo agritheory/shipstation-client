@@ -31,6 +31,7 @@ def test_get_customer(ss: ShipStation, mocked_api: MockRouter) -> None:
     assert isinstance(response.address_verified, str)
     assert response.address_verified == "Verified"
     assert response.create_date == datetime.datetime(2017, 12, 16, 18, 49, 16, 7000)
+    assert response.marketplace_usernames is not None
     assert response.marketplace_usernames[0].customer_id == 123456789
 
 
@@ -65,7 +66,7 @@ def test_get_rates(ss: ShipStation, mocked_api: MockRouter) -> None:
             from_postal_code="20500",
             to_postal_code="20500",
             to_country="US",
-            weight=ShipStationWeight(units="ounces", value=12),
+            weight=ShipStationWeight(units="ounces", value=Decimal(12)),
         )
     )
     assert request.called
@@ -134,9 +135,11 @@ def test_list_orders(ss: ShipStation, mocked_api: MockRouter) -> None:
     # assert isinstance(response[0].items[0], ShipStationOrderItem)
     assert isinstance(response[0].advanced_options, ShipStationAdvancedOptions)
     assert isinstance(response[0].weight, ShipStationWeight)
+    assert isinstance(response[1], ShipStationOrder)
     assert isinstance(
         response[1].international_options, ShipStationInternationalOptions
     )
+    assert response[1].international_options.customs_items is not None
     assert isinstance(
         response[1].international_options.customs_items[0], ShipStationCustomsItem
     )
@@ -151,6 +154,7 @@ def test_list_stores(ss: ShipStation, mocked_api: MockRouter) -> None:
     assert request.called
     assert isinstance(response[0], ShipStationStore)
     assert response[0].store_name == "Mexico Amazon Store"
+    assert isinstance(response[1], ShipStationStore)
     assert response[1].account_name == "DEF123456789"
 
 
@@ -161,6 +165,7 @@ def test_list_users(ss: ShipStation, mocked_api: MockRouter) -> None:
     assert request.called
     assert isinstance(response[0], ShipStationUser)
     assert response[0].name == "Merchandising"
+    assert isinstance(response[1], ShipStationUser)
     assert isinstance(response[1].user_id, UUID)
     assert response[1].user_id == UUID("0dbc3f54-5cd4-4054-b2b5-92427e18d6cd")
 
@@ -196,6 +201,7 @@ def test_list_services(ss: ShipStation, mocked_api: MockRouter) -> None:
     response = ss.list_services(carrier_code="stamps_com")
     assert request.called
     assert isinstance(response[0], ShipStationCarrierService)
+    assert isinstance(response[1], ShipStationCarrierService)
     assert response[1].international is False
 
 
@@ -228,6 +234,7 @@ def test_list_packages(ss: ShipStation, mocked_api: MockRouter) -> None:
     assert request.called
     assert isinstance(response[0], ShipStationCarrierPackage)
     assert isinstance(response[0].domestic, bool)
+    assert isinstance(response[1], ShipStationCarrierPackage)
     assert response[1].domestic is True
     assert response[1].code == "flat_rate_envelope"
 
@@ -241,6 +248,7 @@ def test_list_customers(ss: ShipStation, mocked_api: MockRouter) -> None:
     assert isinstance(response[0].address_verified, str)
     assert response[0].address_verified == "Verified"
     assert response[0].create_date == datetime.datetime(2017, 12, 16, 18, 49, 16, 7000)
+    assert response[0].marketplace_usernames is not None
     assert response[0].marketplace_usernames[0].customer_id == 123456789
 
 
@@ -253,6 +261,7 @@ def test_list_fulfillments(ss: ShipStation, mocked_api: MockRouter) -> None:
     assert isinstance(response[0].ship_to, ShipStationAddress)
     assert isinstance(response[0].user_id, UUID)
     assert response[0].create_date == datetime.datetime(2020, 6, 19, 7, 21, 51, 773000)
+    assert isinstance(response[1], ShipStationFulfillment)
     assert response[1].notify_error_message is not None
 
 

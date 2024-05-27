@@ -59,20 +59,20 @@ class ShipStation(ShipStationHTTP):
             call=(self.get, {"endpoint": "/orders/list"}),
         )
 
-    def get_order(self, order_id: str) -> str | ShipStationBase | None:
+    def get_order(self, order_id: str | int) -> str | ShipStationBase | None:
         r = self.get(endpoint=f"/orders/{order_id}")
         return ShipStationOrder().json(r.json(parse_float=Decimal))
 
-    def delete_order(self, order_id: str) -> Any:
+    def delete_order(self, order_id: str | int) -> Any:
         msg = self.delete(endpoint=f"/orders/{order_id}")
         return msg.json(parse_float=Decimal)
 
-    def add_tag_to_order(self, order_id: str, tag_id: str) -> Any:
+    def add_tag_to_order(self, order_id: str | int, tag_id: str | int) -> Any:
         data = json.dumps({"orderId": str(order_id), "tagId": str(tag_id)})
         r = self.post(endpoint="/orders/addtag", data=data)
         return r.json(parse_float=Decimal)
 
-    def assign_user_to_order(self, order_id: str, user_id: str) -> Any:
+    def assign_user_to_order(self, order_id: str | int, user_id: str | int) -> Any:
         data = json.dumps({"orderId": str(order_id), "userId": str(user_id)})
         r = self.post(endpoint="/orders/assignuser", data=data)
         return r.json(parse_float=Decimal)
@@ -150,7 +150,7 @@ class ShipStation(ShipStationHTTP):
     def unassign_user_from_order(self):
         pass
 
-    def get_product(self, product_id: str) -> str | ShipStationBase | None:
+    def get_product(self, product_id: str | int) -> str | ShipStationBase | None:
         r = self.get(endpoint=f"/products/{product_id}")
         return ShipStationItem().json(
             r.text
@@ -205,7 +205,7 @@ class ShipStation(ShipStationHTTP):
             for service in services.json(parse_float=Decimal)
         ]
 
-    def get_customer(self, customer_id: str) -> str | ShipStationBase | None:
+    def get_customer(self, customer_id: str | int) -> str | ShipStationBase | None:
         customer = self.get(endpoint=f"/customers/{customer_id}")
         return ShipStationCustomer().json(customer.text)
 
@@ -273,7 +273,7 @@ class ShipStation(ShipStationHTTP):
         ]
 
     def list_stores(
-        self, show_inactive: bool = False, marketplace_id: str | None = None
+        self, show_inactive: bool = False, marketplace_id: int | None = None
     ) -> list[str | ShipStationBase]:
         parameters = {}
         if show_inactive:
@@ -287,7 +287,7 @@ class ShipStation(ShipStationHTTP):
             ShipStationStore().json(s) for s in stores.json(parse_float=Decimal) if s
         ]
 
-    def get_store(self, store_id: str) -> str | ShipStationBase | None:
+    def get_store(self, store_id: str | int) -> str | ShipStationBase | None:
         store = self.get(endpoint=f"/stores/{store_id}")
         return ShipStationStore().json(store.json(parse_float=Decimal))
 
@@ -302,12 +302,12 @@ class ShipStation(ShipStationHTTP):
         store = self.put(endpoint="/stores/storeId", data=options)
         return ShipStationStore().json(store.json(parse_float=Decimal))
 
-    def deactivate_store(self, store_id: str) -> Any:
+    def deactivate_store(self, store_id: str | int) -> Any:
         store_id = json.dumps({"storeId": str(store_id)})
         store = self.post(endpoint="/stores/deactivate", data=store_id)
         return store.json(parse_float=Decimal)
 
-    def reactivate_store(self, store_id: str) -> Any:
+    def reactivate_store(self, store_id: str | int) -> Any:
         store_id = json.dumps({"storeId": str(store_id)})
         store = self.post(endpoint="/stores/reactivate", data=store_id)
         return store.json(parse_float=Decimal)
@@ -323,7 +323,7 @@ class ShipStation(ShipStationHTTP):
             if user
         ]
 
-    def get_warehouse(self, warehouse_id: str) -> str | ShipStationBase | None:
+    def get_warehouse(self, warehouse_id: str | int) -> str | ShipStationBase | None:
         wh = self.get(endpoint=f"/warehouses/{warehouse_id}")
         return ShipStationWarehouse().json(wh.json(parse_float=Decimal))
 
@@ -340,7 +340,7 @@ class ShipStation(ShipStationHTTP):
         wh = self.post(endpoint="/warehouses/createwarehouse", data=data.json())
         return ShipStationWarehouse().json(wh.json(parse_float=Decimal))
 
-    def delete_warehouse(self, warehouse_id: str) -> Any:
+    def delete_warehouse(self, warehouse_id: str | int) -> Any:
         msg = self.delete(endpoint=f"/warehouses/{warehouse_id}")
         return msg.json(parse_float=Decimal)
 
@@ -359,7 +359,7 @@ class ShipStation(ShipStationHTTP):
         )
         return [ShipStationWebhook().json(w) for w in webhooks if w]
 
-    def unsubscribe_to_webhook(self, webhook_id: str) -> Any:
+    def unsubscribe_to_webhook(self, webhook_id: str | int) -> Any:
         msg = self.delete(endpoint=f"/webhooks/{webhook_id}")
         return msg.json(parse_float=Decimal)
 

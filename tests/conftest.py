@@ -102,8 +102,8 @@ def mocked_api():
             200, json=LIST_WAREHOUSES
         )
 
-        respx_mock.get("/accounts/users", name="list_webhooks").respond(
-            200, json=LIST_WEBHOOKS
-        )
+        # respx_mock.get("/accounts/users", name="list_webhooks").respond(
+        #     200, json=LIST_WEBHOOKS
+        # )
 
         yield respx_mock
