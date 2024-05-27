@@ -42,7 +42,7 @@ class ShipStation(ShipStationHTTP):
         return ShipStationOrder().json(r.json(parse_float=Decimal))
 
     # refactor
-    def list_orders(self, parameters: dict[str] = {}) -> Page:
+    def list_orders(self, parameters: dict[str, Any] = {}) -> Page:
         self.require_type(parameters, dict)
         invalid_keys = set(parameters.keys()).difference(ORDER_LIST_PARAMETERS)
         if invalid_keys:
@@ -87,7 +87,7 @@ class ShipStation(ShipStationHTTP):
             return r.json()
         new_data = self.convert_camel_case(r.json())
         if pdf:
-            return BytesIO(base64.b64decode(new_data["label_data"]))  # type: ignore
+            return BytesIO(base64.b64decode(new_data["label_data"]))
         if isinstance(new_data, dict):
             for key, value in new_data.items():
                 if value:
@@ -156,7 +156,7 @@ class ShipStation(ShipStationHTTP):
             r.text
         )  # TODO: switch to parse float and test deserialization
 
-    def list_products(self, parameters: dict[str] = {}) -> Page:
+    def list_products(self, parameters: dict[str, Any] = {}) -> Page:
         valid_parameters = self._validate_parameters(
             parameters, PRODUCT_LIST_PARAMETERS
         )
@@ -185,7 +185,7 @@ class ShipStation(ShipStationHTTP):
         carrier = self.get(
             endpoint="/carriers/getcarrier", payload={"carrierCode": carrier_code}
         )
-        return ShipStationCarrier().json(carrier.text)  # type: ignore
+        return ShipStationCarrier().json(carrier.text)
 
     def list_packages(self, carrier_code: str) -> list[str | ShipStationBase | None]:
         packages = self.get(
@@ -243,9 +243,9 @@ class ShipStation(ShipStationHTTP):
         )
 
     # TODO: return shipment label as objects
-    def create_shipment_label(self, order: str) -> ShipStationOrder:
+    def create_shipment_label(self, order: ShipStationOrder) -> ShipStationOrder:
         self.require_type(order, ShipStationOrder)
-        order.validate()
+        # order.validate()
         return self.post(endpoint="/shipments/createlabel", data=order.json())
 
     def get_rates(
@@ -275,7 +275,7 @@ class ShipStation(ShipStationHTTP):
     def list_stores(
         self, show_inactive: bool = False, marketplace_id: str | None = None
     ) -> list[str | ShipStationBase]:
-        parameters = {}  # type: ignore
+        parameters = {}
         if show_inactive:
             self.require_type(show_inactive, bool)
             parameters["showInactive"] = show_inactive

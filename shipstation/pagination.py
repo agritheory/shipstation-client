@@ -1,3 +1,5 @@
+from typing import Any
+
 from collections.abc import Callable
 from decimal import Decimal
 
@@ -10,18 +12,18 @@ from shipstation.base import ShipStationBase
 class Page:
     key: str
     type: type
-    call: tuple[Callable, dict[str]] | None
+    call: tuple[Callable, dict[str, Any]] | None
     results: list[ShipStationBase] = []
-    params: dict[str] | None = None
+    params: dict[str, Any] | None = None
     page: int = 0
     pages: int = 0
     total: int = 0
     _index: int = 0
 
     def __attrs_post_init__(self) -> None:
-        f, args = self.call[0], self.call[1]  # type: ignore
+        f, args = self.call[0], self.call[1]
         if self.params:
-            args = {**self.call[1], "payload": self.params}  # type: ignore
+            args = {**self.call[1], "payload": self.params}
         response = f(**args)
         self.load_results(response)
 
@@ -50,7 +52,7 @@ class Page:
     def next_page(self) -> "Page":
         if self.page >= self.pages:
             raise StopIteration
-        api_method, args = self.call[0], self.call[1]  # type: ignore
+        api_method, args = self.call[0], self.call[1]
         args["payload"] = {**(self.params or {}), "page": str(self.page + 1)}
         return self.load_results(api_method(**args))
 

@@ -41,7 +41,9 @@ class ShipStationBase:
         return data
 
     @classmethod
-    def convert_snake_case(self, data: Iterable[Any]) -> dict[str] | list[Any] | Any:
+    def convert_snake_case(
+        self, data: Iterable[Any]
+    ) -> dict[str, Any] | list[Any] | Any:
         if isinstance(data, dict):
             new_dict = {}
             for key, value in data.items():
@@ -74,12 +76,14 @@ class ShipStationBase:
         if value not in other:
             raise AttributeError(f"'{value}' is not one of {other}")
 
-    def _validate_parameters(self, parameters: Any, valid_parameters: Any) -> dict[str]:
+    def _validate_parameters(
+        self, parameters: Any, valid_parameters: Any
+    ) -> dict[str, Any]:
         return {self.to_camel_case(key): value for key, value in parameters.items()}
 
     def json(
-        self, json_str: None | str | dict[str] = None
-    ) -> Union[Any, "ShipStationBase"]:
+        self, json_str: None | str | dict[str, Any] = None
+    ) -> Union[Any, str, "ShipStationBase"]:
         if not json_str:
             return json.dumps(self.convert_snake_case(self._unstructure()))
         if isinstance(json_str, dict):
