@@ -130,10 +130,6 @@ check-style:
 codestyle:
 	poetry run pre-commit run --all-files
 
-.PHONY: check-style
-mypy:
-	poetry run mypy shipstation/
-
 .PHONY: test
 test:
 	@echo -e "Running tests..."
