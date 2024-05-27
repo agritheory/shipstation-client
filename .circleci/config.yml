@@ -1,29 +1,34 @@
-version: 2
+version: 2.1
+
 jobs:
   build:
-    working_directory: ~/project
     docker:
-      - image: circleci/python:3.10
+      - image: cimg/python:3.10
     steps:
       - checkout
       - restore_cache:
           keys:
             - deps-{{ checksum "poetry.lock" }}
+
       - run:
           name: Install Dependencies
           command: |
             sudo pip install poetry
             poetry install
+
       - save_cache:
           key: deps-{{ checksum "poetry.lock" }}
           paths:
             - /home/circleci/.cache/pypoetry/virtualenvs
+
       - run:
           name: Lint using Black
           command: poetry run black --check .
+
       - run:
           name: Run Tests
           command: poetry run pytest -s --mypy shipstation --cov=shipstation
+
       - run:
           name: Build Distributions
           command: poetry build
