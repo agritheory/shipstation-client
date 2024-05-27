@@ -2,18 +2,19 @@
 name = "shipstation-client"
 version = "0.1.0"
 description = 'Python bindings for the ShipStation API'
-readme = "README.md"
-authors = ["AgriTheory <hello@agritheory.com>"]
 license = "MIT"
-repository = "https://github.com/agritheory/shipstation-client"
+authors = ["AgriTheory <hello@agritheory.com>"]
+readme = "README.md"
 homepage = "https://github.com/agritheory/shipstation-client"
-keywords = ['shipstation']
+repository = "https://github.com/agritheory/shipstation-client"
+keywords = ['shipstation', 'client', 'api', 'python', 'orders', 'shipments']
 packages = [{ include = "shipstation" }]
 classifiers = [
+  "Development Status :: 4 - Beta",
   "Environment :: Web Environment",
+  "Framework :: Pytest",
   "Intended Audience :: Developers",
   "License :: OSI Approved :: MIT License",
-  "Topic :: Software Development :: Libraries :: Python Modules",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
@@ -21,18 +22,19 @@ classifiers = [
   "Programming Language :: Python",
   "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
   "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Typing :: Typed",
 ]
 
 [build-system]
-requires = ["poetry>=1.0"]
-build-backend = "poetry.masonry.api"
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
 attrs = "^23.2.0"
 cattrs = "^23.2.3"
 httpx = "^0.27.0"
-importlib_metadata = {version = "^4.6.0", python = "<3.10"}
 python-dateutil = "^2.8.1"
 
 [tool.poetry.group.dev.dependencies]

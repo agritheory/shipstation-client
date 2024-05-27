@@ -8,7 +8,7 @@ from decimal import Decimal
 from uuid import UUID
 
 from cattrs import Converter
-from dateutil import parser
+from dateutil.parser import parse
 
 snake_case_regex = re.compile("([a-z0-9])([A-Z])")
 
@@ -105,7 +105,7 @@ class ShipStationBase:
     def _structure(self, json_input: Iterable[Any]) -> Any:
         conv = Converter()
         conv.register_structure_hook(Decimal, lambda d, t: Decimal(d))
-        conv.register_structure_hook(datetime, lambda dt, t: parser.parse(dt))
-        conv.register_structure_hook(date, lambda dt, t: parser.parse(dt))
+        conv.register_structure_hook(datetime, lambda dt, t: parse(dt))
+        conv.register_structure_hook(date, lambda dt, t: parse(dt))
         conv.register_structure_hook(UUID, lambda d, t: UUID(d))
         return conv.structure(json_input, type(self))

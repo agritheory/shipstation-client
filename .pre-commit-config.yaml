@@ -8,7 +8,7 @@ repos:
     rev: v2.5.0
     hooks:
       - id: check-yaml
-        exclude: ^{{ cookiecutter.project_name }}/.github/
+        exclude: ^.github/
       - id: end-of-file-fixer
 
   - repo: local
@@ -16,7 +16,6 @@ repos:
       - id: isort
         name: isort
         entry: poetry run isort --settings-path pyproject.toml
-        exclude: ^{{ cookiecutter.project_name }}/
         types: [python]
         language: system
 
@@ -25,7 +24,6 @@ repos:
       - id: pyupgrade
         name: pyupgrade
         entry: poetry run pyupgrade --py310-plus
-        exclude: ^{{ cookiecutter.project_name }}/
         types: [python]
         language: system
 
@@ -34,6 +32,5 @@ repos:
       - id: black
         name: black
         entry: poetry run black --config pyproject.toml
-        exclude: ^{{ cookiecutter.project_name }}/
         types: [python]
         language: system
