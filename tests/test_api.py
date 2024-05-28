@@ -122,6 +122,7 @@ def test_list_marketplaces(ss: ShipStation, mocked_api: MockRouter) -> None:
     assert request.called
     assert isinstance(response[0], ShipStationMarketplace)
     assert response[0].name == "3dcart"
+    assert isinstance(response[1], ShipStationMarketplace)
     assert response[1].name == "Acumatica"
 
 
