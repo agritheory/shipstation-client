@@ -13,6 +13,7 @@ __all__ = [
     "FULFILLMENT_LIST_PARAMETERS",
     "GET_RATE_OPTIONS",
     "NON_DELIVERY_OPTIONS",
+    "ORDER_LIST_BY_TAG_PARAMETERS",
     "ORDER_LIST_PARAMETERS",
     "ORDER_STATUS_VALUES",
     "PRODUCT_LIST_PARAMETERS",
@@ -78,6 +79,14 @@ PRODUCT_LIST_PARAMETERS = (
     "show_inactive",
     "sort_by",
     "sort_dir",
+    "page",
+    "page_size",
+)
+
+# https://www.shipstation.com/docs/api/orders/list-by-tag/
+ORDER_LIST_BY_TAG_PARAMETERS = (
+    "order_status",
+    "tag_id",
     "page",
     "page_size",
 )

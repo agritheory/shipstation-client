@@ -188,11 +188,11 @@ def test_list_webhooks(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_webhooks"]
     response = ss.list_webhooks()
     assert request.called
-    # assert isinstance(response[0], ShipStationWarehouse)
-    # assert isinstance(response[0].origin_address, ShipStationAddress)
-    # assert response[0].origin_address.name == "Warehouse 1"
-    # assert response[0].warehouse_id == '456789'
-    # assert response[0].origin_address.street2 == "Unit 4"
+    assert isinstance(response[0], ShipStationWarehouse)
+    assert isinstance(response[0].origin_address, ShipStationAddress)
+    assert response[0].warehouse_id == "456789"
+    assert response[0].origin_address.name == "Warehouse 1"
+    assert response[0].origin_address.street2 == "Unit 4"
 
 
 @mock
@@ -265,11 +265,6 @@ def test_list_fulfillments(ss: ShipStation, mocked_api: MockRouter) -> None:
     assert response[1].notify_error_message is not None
 
 
-"""
-test_list_products is tested in test_pagination.py
-"""
-
-
 # def test_label():
 #     order = ss.get_order(481287142)
 #     order.weight = ShipStationWeight(units="ounces", value=64)
@@ -307,7 +302,7 @@ test_list_products is tested in test_pagination.py
 #             webhook["WebHookID"]
 #
 #
-# def test_stores():
+# def test_stores(ss: ShipStation, mocked_api: MockRouter) -> None:
 #     marketplaces = ss.list_marketplaces()
 #     assert marketplaces.status_code == 200
 #     stores = ss.list_stores().json()

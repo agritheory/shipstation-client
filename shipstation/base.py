@@ -77,8 +77,13 @@ class ShipStationBase:
             raise AttributeError(f"'{value}' is not one of {other}")
 
     def _validate_parameters(
-        self, parameters: Any, valid_parameters: Any
+        self, parameters: dict[str, Any], valid_parameters: tuple[str]
     ) -> dict[str, Any]:
+        invalid_keys = set(parameters.keys()).difference(valid_parameters)
+        if invalid_keys:
+            raise AttributeError(
+                "Invalid order list parameters: {}".format(", ".join(invalid_keys))
+            )
         return {self.to_camel_case(key): value for key, value in parameters.items()}
 
     def json(

@@ -60,7 +60,7 @@ def mocked_api():
         ).respond(200, json=LIST_MARKETPLACES)
 
         respx_mock.get(
-            "/orders/list",
+            "/orders",
             name="list_orders",
         ).respond(200, json=LIST_ORDERS)
 

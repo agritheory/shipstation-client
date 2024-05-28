@@ -70,7 +70,7 @@ def test_list_products_ensure_params(
     ss: ShipStation, mocked_pagination: MockRouter
 ) -> None:
     request = mocked_pagination["list_products_params_1"]
-    response = ss.list_products(parameters={"pageSize": "3"})
+    response = ss.list_products(parameters={"page_size": "3"})
     skus = (
         "987654321",
         "987654322",
@@ -86,7 +86,7 @@ def test_list_products_ensure_params(
         assert isinstance(product, ShipStationItem)
         assert product.price == Decimal("11.99")
         assert product.sku == skus[index]
-        assert response.params == {"pageSize": "3"}
+        assert response.params == {"page_size": "3"}
 
 
 LIST_PRODUCTS_NONE = {"page": 1, "pages": 1, "products": [], "total": 1}
