@@ -1,21 +1,18 @@
 import datetime
-import json
-import os
 from decimal import Decimal
 from uuid import UUID
 
-import httpx
 import pytest
-import respx
-
 from conftest import *
+from httpx import HTTPStatusError
+from respx import MockRouter, mock
 from shipstation.api import ShipStation
 from shipstation.models import *
 from shipstation.pagination import Page
 
 
-@respx.mock
-def test_get_carrier(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_get_carrier(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["get_carrier"]
     response = ss.get_carrier("stamps_com")
     assert request.called
@@ -25,20 +22,21 @@ def test_get_carrier(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
     assert response.account_number == "example"
 
 
-@respx.mock
-def test_get_customer(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_get_customer(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["get_customer"]
     response = ss.get_customer(123456789)
     assert request.called
     assert isinstance(response, ShipStationCustomer)
-    assert isinstance(response.address_verified, bool)
-    assert response.address_verified is True
+    assert isinstance(response.address_verified, str)
+    assert response.address_verified == "Verified"
     assert response.create_date == datetime.datetime(2017, 12, 16, 18, 49, 16, 7000)
+    assert response.marketplace_usernames is not None
     assert response.marketplace_usernames[0].customer_id == 123456789
 
 
-@respx.mock
-def test_get_order(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_get_order(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["get_order"]
     response = ss.get_order(123456789)
     assert request.called
@@ -50,8 +48,8 @@ def test_get_order(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
     assert response.create_date == datetime.datetime(2015, 6, 30, 15, 20, 26, 723000)
 
 
-@respx.mock
-def test_get_product(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_get_product(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["get_product"]
     response = ss.get_product(123456789)
     assert request.called
@@ -59,8 +57,8 @@ def test_get_product(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
     assert response.create_date == datetime.datetime(2016, 10, 31, 7, 43, 0, 203000)
 
 
-@respx.mock
-def test_get_rates(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_get_rates(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["get_rates"]
     response = ss.get_rates(
         ShipStationRateOptions(
@@ -68,7 +66,7 @@ def test_get_rates(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
             from_postal_code="20500",
             to_postal_code="20500",
             to_country="US",
-            weight=ShipStationWeight(units="ounces", value=12),
+            weight=ShipStationWeight(units="ounces", value=Decimal(12)),
         )
     )
     assert request.called
@@ -77,8 +75,8 @@ def test_get_rates(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
     assert response[0].shipment_cost == Decimal("3.2")
 
 
-@respx.mock
-def test_get_stores(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_get_stores(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["get_store"]
     response = ss.get_store(12345)
     assert request.called
@@ -87,8 +85,8 @@ def test_get_stores(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
     assert response.account_name == "GHI123456789"
 
 
-@respx.mock
-def test_get_warehouse(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_get_warehouse(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["get_warehouse"]
     response = ss.get_warehouse(456789)
     assert request.called
@@ -97,8 +95,8 @@ def test_get_warehouse(ss: ShipStation, mocked_api: respx.MockTransport) -> None
     assert response.warehouse_name == "Test Company"
 
 
-@respx.mock
-def test_list_carriers(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_carriers(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_carriers"]
     response = ss.list_carriers()
     assert request.called
@@ -107,8 +105,8 @@ def test_list_carriers(ss: ShipStation, mocked_api: respx.MockTransport) -> None
     assert response[0].balance == Decimal("15.01")
 
 
-@respx.mock
-def test_list_tags(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_tags(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_tags"]
     response = ss.list_tags()
     assert request.called
@@ -117,31 +115,32 @@ def test_list_tags(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
     assert response[0].name == "Amazon Prime Order"
 
 
-@respx.mock
-def test_list_marketplaces(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_marketplaces(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_marketplaces"]
     response = ss.list_marketplaces()
     assert request.called
     assert isinstance(response[0], ShipStationMarketplace)
     assert response[0].name == "3dcart"
+    assert isinstance(response[1], ShipStationMarketplace)
     assert response[1].name == "Acumatica"
 
 
-@respx.mock
-def test_list_orders(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_orders(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_orders"]
     response = ss.list_orders()
     assert request.called
-    # for order in response:
-    print("items", response[0].items)
     assert isinstance(response[0], ShipStationOrder)
     assert isinstance(response[0].ship_to, ShipStationAddress)
     # assert isinstance(response[0].items[0], ShipStationOrderItem)
     assert isinstance(response[0].advanced_options, ShipStationAdvancedOptions)
     assert isinstance(response[0].weight, ShipStationWeight)
+    assert isinstance(response[1], ShipStationOrder)
     assert isinstance(
         response[1].international_options, ShipStationInternationalOptions
     )
+    assert response[1].international_options.customs_items is not None
     assert isinstance(
         response[1].international_options.customs_items[0], ShipStationCustomsItem
     )
@@ -149,29 +148,31 @@ def test_list_orders(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
     assert response[1].shipping_amount == Decimal("0.0")
 
 
-@respx.mock
-def test_list_stores(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_stores(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_stores"]
     response = ss.list_stores(marketplace_id=2)
     assert request.called
     assert isinstance(response[0], ShipStationStore)
     assert response[0].store_name == "Mexico Amazon Store"
+    assert isinstance(response[1], ShipStationStore)
     assert response[1].account_name == "DEF123456789"
 
 
-@respx.mock
-def test_list_users(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_users(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_users"]
     response = ss.list_users()
     assert request.called
     assert isinstance(response[0], ShipStationUser)
     assert response[0].name == "Merchandising"
+    assert isinstance(response[1], ShipStationUser)
     assert isinstance(response[1].user_id, UUID)
     assert response[1].user_id == UUID("0dbc3f54-5cd4-4054-b2b5-92427e18d6cd")
 
 
-@respx.mock
-def test_list_warehouses(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_warehouses(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_warehouses"]
     response = ss.list_warehouses()
     assert request.called
@@ -183,29 +184,30 @@ def test_list_warehouses(ss: ShipStation, mocked_api: respx.MockTransport) -> No
 
 
 @pytest.mark.skip
-@respx.mock
-def test_list_webhooks(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_webhooks(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_webhooks"]
     response = ss.list_webhooks()
     assert request.called
-    # assert isinstance(response[0], ShipStationWarehouse)
-    # assert isinstance(response[0].origin_address, ShipStationAddress)
-    # assert response[0].origin_address.name == "Warehouse 1"
-    # assert response[0].warehouse_id == '456789'
-    # assert response[0].origin_address.street2 == "Unit 4"
+    assert isinstance(response[0], ShipStationWarehouse)
+    assert isinstance(response[0].origin_address, ShipStationAddress)
+    assert response[0].warehouse_id == "456789"
+    assert response[0].origin_address.name == "Warehouse 1"
+    assert response[0].origin_address.street2 == "Unit 4"
 
 
-@respx.mock
-def test_list_services(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_services(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_services"]
     response = ss.list_services(carrier_code="stamps_com")
     assert request.called
     assert isinstance(response[0], ShipStationCarrierService)
+    assert isinstance(response[1], ShipStationCarrierService)
     assert response[1].international is False
 
 
-@respx.mock
-def test_list_shipments(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_shipments(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_shipments"]
     response = ss.list_shipments()
     assert request.called
@@ -219,38 +221,40 @@ def test_list_shipments(ss: ShipStation, mocked_api: respx.MockTransport) -> Non
     assert response[0].tracking_number == "9400111899562764298812"
 
 
-@respx.mock
-def test_list_shipments_error(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
-    request = mocked_api["list_shipments_error"]
-    with pytest.raises(httpx.HTTPStatusError):
+@mock
+def test_list_shipments_error(ss: ShipStation, mocked_api: MockRouter) -> None:
+    request = mocked_api["list_shipments"]
+    with pytest.raises(HTTPStatusError):
         ss.list_shipments()
 
 
-@respx.mock
-def test_list_packages(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_packages(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_packages"]
     response = ss.list_packages(carrier_code="stamps_com")
     assert request.called
     assert isinstance(response[0], ShipStationCarrierPackage)
     assert isinstance(response[0].domestic, bool)
+    assert isinstance(response[1], ShipStationCarrierPackage)
     assert response[1].domestic is True
     assert response[1].code == "flat_rate_envelope"
 
 
-@respx.mock
-def test_list_customers(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_customers(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_customers"]
     response = ss.list_customers()
     assert request.called
     assert isinstance(response[0], ShipStationCustomer)
-    assert isinstance(response[0].address_verified, bool)
-    assert response[0].address_verified is True
+    assert isinstance(response[0].address_verified, str)
+    assert response[0].address_verified == "Verified"
     assert response[0].create_date == datetime.datetime(2017, 12, 16, 18, 49, 16, 7000)
+    assert response[0].marketplace_usernames is not None
     assert response[0].marketplace_usernames[0].customer_id == 123456789
 
 
-@respx.mock
-def test_list_fulfillments(ss: ShipStation, mocked_api: respx.MockTransport) -> None:
+@mock
+def test_list_fulfillments(ss: ShipStation, mocked_api: MockRouter) -> None:
     request = mocked_api["list_fulfillments"]
     response = ss.list_fulfillments()
     assert request.called
@@ -258,12 +262,8 @@ def test_list_fulfillments(ss: ShipStation, mocked_api: respx.MockTransport) -> 
     assert isinstance(response[0].ship_to, ShipStationAddress)
     assert isinstance(response[0].user_id, UUID)
     assert response[0].create_date == datetime.datetime(2020, 6, 19, 7, 21, 51, 773000)
+    assert isinstance(response[1], ShipStationFulfillment)
     assert response[1].notify_error_message is not None
-
-
-"""
-test_list_products is tested in test_pagination.py
-"""
 
 
 # def test_label():
@@ -303,7 +303,7 @@ test_list_products is tested in test_pagination.py
 #             webhook["WebHookID"]
 #
 #
-# def test_stores():
+# def test_stores(ss: ShipStation, mocked_api: MockRouter) -> None:
 #     marketplaces = ss.list_marketplaces()
 #     assert marketplaces.status_code == 200
 #     stores = ss.list_stores().json()

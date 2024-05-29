@@ -1,22 +1,18 @@
-import json
-from decimal import Decimal
 import datetime
 
 import pytest
-import respx
-
-
-from conftest import ss
+from respx import MockRouter, mock
 from shipstation.api import ShipStation
 from shipstation.models import *
 
 
 @pytest.fixture(scope="session")
-def mocked_order_creation() -> respx.MockTransport:
-    base_url = "https://ssapi.shipstation.com"
-    with respx.mock(base_url=base_url, assert_all_called=False) as respx_mock:
-        respx_mock.post(
-            "/orders/createorder", content=order_creation, alias="test_order_creation"
+def mocked_order_creation():
+    with mock(
+        base_url="https://ssapi.shipstation.com", assert_all_called=False
+    ) as respx_mock:
+        respx_mock.post("/orders/createorder", name="test_order_creation").respond(
+            200, json=ORDER_CREATION
         )
         yield respx_mock
 
@@ -38,7 +34,7 @@ def mock_order() -> ShipStationOrder:
             postal_code="20500",
             country=None,
             phone="",
-            address_verified=None,
+            address_verified="Address validated successfully",
         ),
         ship_to=ShipStationAddress(
             name="Random Customer",
@@ -51,7 +47,7 @@ def mock_order() -> ShipStationOrder:
             postal_code="20500",
             country=None,
             phone="",
-            address_verified=None,
+            address_verified="Address validated successfully",
         ),
         carrier_code="ups_walleted",
         service_code="ups_ground",
@@ -61,10 +57,10 @@ def mock_order() -> ShipStationOrder:
     )
 
 
-@respx.mock
+@mock
 def test_create_order(
     ss: ShipStation,
-    mocked_order_creation: respx.MockTransport,
+    mocked_order_creation: MockRouter,
     mock_order: ShipStationOrder,
 ) -> None:
     request = mocked_order_creation["test_order_creation"]
@@ -75,68 +71,67 @@ def test_create_order(
     assert isinstance(response.ship_date, datetime.datetime)
 
 
-order_creation = """
-{
+ORDER_CREATION = {
     "advancedOptions": {
-        "billToAccount": null,
-        "billToCountryCode": null,
-        "billToMyOtherAccount": null,
-        "billToParty": null,
-        "billToPostalCode": null,
-        "containsAlcohol": false,
-        "customField1": null,
-        "customField2": null,
-        "customField3": null,
+        "billToAccount": None,
+        "billToCountryCode": None,
+        "billToMyOtherAccount": None,
+        "billToParty": None,
+        "billToPostalCode": None,
+        "containsAlcohol": False,
+        "customField1": None,
+        "customField2": None,
+        "customField3": None,
         "mergedIds": [],
-        "mergedOrSplit": false,
-        "nonMachinable": false,
-        "parentId": null,
-        "saturdayDelivery": false,
-        "source": null,
+        "mergedOrSplit": False,
+        "nonMachinable": False,
+        "parentId": None,
+        "saturdayDelivery": False,
+        "source": None,
         "storeId": 176145,
-        "warehouseId": 241631
+        "warehouseId": 241631,
     },
     "amountPaid": 0.0,
     "billTo": {
-        "addressVerified": null,
+        "addressVerified": None,
         "city": "WASHINGTON",
-        "company": null,
-        "country": null,
+        "company": None,
+        "country": None,
         "name": "Random Customer",
-        "phone": null,
+        "phone": None,
         "postalCode": "20500",
-        "residential": null,
+        "residential": None,
         "state": "DC",
         "street1": "Random Customer",
         "street2": "1600 Pennsylvania Avenue NW",
-        "street3": null
+        "street3": None,
     },
     "carrierCode": "ups_walleted",
     "confirmation": "none",
     "createDate": "2020-10-21T11:47:05.7430000",
-    "customerEmail": null,
-    "customerId": null,
-    "customerNotes": null,
-    "customerUsername": null,
-    "dimensions": null,
-    "externallyFulfilled": false,
-    "externallyFulfilledBy": null,
-    "gift": false,
-    "giftMessage": null,
-    "holdUntilDate": null,
+    "customerEmail": None,
+    "customerId": None,
+    "customerNotes": None,
+    "customerUsername": None,
+    "dimensions": None,
+    "externallyFulfilled": False,
+    "externallyFulfilledBy": None,
+    "gift": False,
+    "giftMessage": None,
+    "holdUntilDate": None,
     "insuranceOptions": {
-        "insureShipment": false,
+        "insureShipment": False,
         "insuredValue": 0.0,
-        "provider": null
+        "provider": None,
     },
-    "internalNotes": null,
+    "internalNotes": None,
     "internationalOptions": {
-        "contents": null,
-        "customsItems": null,
-        "nonDelivery": null
+        "contents": None,
+        "customsItems": None,
+        "nonDelivery": None,
     },
     "items": [],
-    "labelMessages": null,
+    "labelMessages": None,
     "modifyDate": "2020-10-21T11:47:05.6800000",
     "orderDate": "2020-09-28T00:00:00.0000000",
     "orderId": 143862300,
@@ -145,46 +140,42 @@ order_creation = """
     "orderStatus": "awaiting_shipment",
     "orderTotal": 0.0,
     "packageCode": "package",
-    "paymentDate": null,
-    "paymentMethod": null,
-    "requestedShippingService": null,
+    "paymentDate": None,
+    "paymentMethod": None,
+    "requestedShippingService": None,
     "serviceCode": "ups_ground",
-    "shipByDate": null,
+    "shipByDate": None,
     "shipDate": "2020-09-28",
     "shipTo": {
         "addressVerified": "Address validation warning",
         "city": "WASHINGTON",
-        "company": null,
+        "company": None,
         "country": "US",
         "name": "Random Customer",
-        "phone": null,
+        "phone": None,
         "postalCode": "20500-0003",
-        "residential": false,
+        "residential": False,
         "state": "DC",
         "street1": "1600 PENNSYLVANIA AVE NW",
         "street2": "RANDOM CUSTOMER",
-        "street3": null
+        "street3": None,
     },
     "shippingAmount": 0.0,
-    "tagIds": null,
+    "tagIds": None,
     "taxAmount": 0.0,
-    "userId": null,
-    "weight": {
-        "WeightUnits": 1,
-        "units": "ounces",
-        "value": 0.0
-    }
+    "userId": None,
+    "weight": {"WeightUnits": 1, "units": "ounces", "value": 0.0},
 }
-"""
 
-duplicate_error_message = """
-{
-    "ExceptionMessage": "Ship To: Postal Code must be provided.",
-    "ExceptionType": "System.Exception",
-    "Message": "An error has occurred.",
-    "StackTrace": "   at SS.OpenApi.Controllers.OrdersController._CreateOrder(Order apiOrder, Guid ImportBatch, Boolean throwDuplicateException) in D:\\buildAgentFull\\work\\8e15a453e647e65a\\SS.OpenApi\\Controllers\\OrdersController.cs:line 1379\r\n   at SS.OpenApi.Controllers.OrdersController.CreateOrder(Order apiOrder) in D:\\buildAgentFull\\work\\8e15a453e647e65a\\SS.OpenApi\\Controllers\\OrdersController.cs:line 976\r\n   at lambda_method(Closure , Object , Object[] )\r\n   at System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.<>c__DisplayClass10.<GetExecutor>b__9(Object instance, Object[] methodParameters)\r\n   at System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ExecuteAsync(HttpControllerContext controllerContext, IDictionary`2 arguments, CancellationToken cancellationToken)\r\n--- End of stack trace from previous location where exception was thrown ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\r\n   at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)\r\n   at System.Web.Http.Controllers.ApiControllerActionInvoker.<InvokeActionAsyncCore>d__0.MoveNext()\r\n--- End of stack trace from previous location where exception was thrown ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\r\n   at System.Web.Http.Filters.ActionFilterAttribute.<CallOnActionExecutedAsync>d__5.MoveNext()\r\n--- End of stack trace from previous location where exception was thrown ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at System.Web.Http.Filters.ActionFilterAttribute.<CallOnActionExecutedAsync>d__5.MoveNext()\r\n--- End of stack trace from previous location where exception was thrown ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\r\n   at System.Web.Http.Filters.ActionFilterAttribute.<ExecuteActionFilterAsyncCore>d__0.MoveNext()\r\n--- End of stack trace from previous location where exception was thrown ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\r\n   at System.Web.Http.Controllers.ActionFilterResult.<ExecuteAsync>d__2.MoveNext()\r\n--- End of stack trace from previous location where exception was thrown ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\r\n   at System.Web.Http.Filters.AuthorizationFilterAttribute.<ExecuteAuthorizationFilterAsyncCore>d__2.MoveNext()\r\n--- End of stack trace from previous location where exception was thrown ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\r\n   at System.Web.Http.Controllers.ExceptionFilterResult.<ExecuteAsync>d__0.MoveNext()\r\n--- End of stack trace from previous location where exception was thrown ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at System.Web.Http.Controllers.ExceptionFilterResult.<ExecuteAsync>d__0.MoveNext()\r\n--- End of stack trace from previous location where exception was thrown ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\r\n   at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)\r\n   at System.Web.Http.Dispatcher.HttpControllerDispatcher.<SendAsync>d__1.MoveNext()"
-}
-"""
+
+# duplicate_error_message = """
+# {
+#     "ExceptionMessage": "Ship To: Postal Code must be provided.",
+#     "ExceptionType": "System.Exception",
+#     "Message": "An error has occurred.",
+#     "StackTrace": "   at SS.OpenApi.Controllers.OrdersController._CreateOrder(Order apiOrder, Guid ImportBatch, Boolean throwDuplicateException) in D:\\buildAgentFull\\work\\8e15a453e647e65a\\SS.OpenApi\\Controllers\\OrdersController.cs:line 1379\r\n   at SS.OpenApi.Controllers.OrdersController.CreateOrder(Order apiOrder) in D:\\buildAgentFull\\work\\8e15a453e647e65a\\SS.OpenApi\\Controllers\\OrdersController.cs:line 976\r\n   at lambda_method(Closure , Object , Object[] )\r\n   at System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.<>c__DisplayClass10.<GetExecutor>b__9(Object instance, Object[] methodParameters)\r\n   at System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ExecuteAsync(HttpControllerContext controllerContext, IDictionary`2 arguments, CancellationToken cancellationToken)\r\n--- End of stack trace from previous location where exception was thrown ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\r\n   at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)\r\n   at System.Web.Http.Controllers.ApiControllerActionInvoker.<InvokeActionAsyncCore>d__0.MoveNext()\r\n--- End of stack trace from previous location where exception was thrown ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\r\n   at System.Web.Http.Filters.ActionFilterAttribute.<CallOnActionExecutedAsync>d__5.MoveNext()\r\n--- End of stack trace from previous location where exception was thrown ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at System.Web.Http.Filters.ActionFilterAttribute.<CallOnActionExecutedAsync>d__5.MoveNext()\r\n--- End of stack trace from previous location where exception was thrown ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\r\n   at System.Web.Http.Filters.ActionFilterAttribute.<ExecuteActionFilterAsyncCore>d__0.MoveNext()\r\n--- End of stack trace from previous location where exception was thrown ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\r\n   at System.Web.Http.Controllers.ActionFilterResult.<ExecuteAsync>d__2.MoveNext()\r\n--- End of stack trace from previous location where exception was thrown ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\r\n   at System.Web.Http.Filters.AuthorizationFilterAttribute.<ExecuteAuthorizationFilterAsyncCore>d__2.MoveNext()\r\n--- End of stack trace from previous location where exception was thrown ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\r\n   at System.Web.Http.Controllers.ExceptionFilterResult.<ExecuteAsync>d__0.MoveNext()\r\n--- End of stack trace from previous location where exception was thrown ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at System.Web.Http.Controllers.ExceptionFilterResult.<ExecuteAsync>d__0.MoveNext()\r\n--- End of stack trace from previous location where exception was thrown ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)\r\n   at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)\r\n   at System.Web.Http.Dispatcher.HttpControllerDispatcher.<SendAsync>d__1.MoveNext()"
+# }
+# """
 
 # ShipStationOrder(
 #     order_number="SI-08557",
@@ -202,7 +193,7 @@ duplicate_error_message = """
 #         country=None,
 #         phone="(717) 455-3765",
 #         residential=None,
-#         address_verified=None,
+#         address_verified="Address validated successfully",
 #     ),
 #     ship_to=ShipStationAddress(
 #         name="Melvin King - 22",
@@ -216,7 +207,7 @@ duplicate_error_message = """
 #         country=None,
 #         phone="(717) 455-3765",
 #         residential=None,
-#         address_verified=None,
+#         address_verified="Address validated successfully",
 #     ),
 #     order_key=None,
 #     payment_date=None,

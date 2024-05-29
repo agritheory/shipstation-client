@@ -12,12 +12,35 @@
 [![Semantic Versions](https://img.shields.io/badge/%F0%9F%9A%80-semantic%20versions-informational.svg)](https://github.com/agritheory/shipstation-client/releases)
 [![License](https://img.shields.io/github/license/agritheory/shipstation-client)](https://github.com/agritheory/shipstation-client/blob/master/LICENSE)
 
-Awesome `shipstation-client` is a Python cli/package created with https://github.com/TezRomacH/python-package-template
+`shipstation-client` is a Python cli/package created with https://github.com/TezRomacH/python-package-template
 </div>
 
-## Very first steps
+---
 
-### Initial
+## 🚀 Features
+
+For your development we've prepared:
+
+- Supports for `Python 3.10` and higher.
+- [`Poetry`](https://python-poetry.org/) as the dependencies manager. See configuration in [`pyproject.toml`](https://github.com/agritheory/shipstation-client/blob/master/pyproject.toml).
+- Power of [`black`](https://github.com/psf/black), [`isort`](https://github.com/timothycrosley/isort) and [`pyupgrade`](https://github.com/asottile/pyupgrade) formatters.
+- Ready-to-use [`pre-commit`](https://pre-commit.com/) hooks with formatters above.
+- Type checks with the configured [`mypy`](https://mypy.readthedocs.io).
+- Testing with [`pytest`](https://docs.pytest.org/en/latest/).
+- Docstring checks with [`darglint`](https://github.com/terrencepreilly/darglint).
+- Security checks with [`safety`](https://github.com/pyupio/safety) and [`bandit`](https://github.com/PyCQA/bandit).
+- Well-made [`.editorconfig`](https://github.com/agritheory/shipstation-client/blob/master/.editorconfig) and [`.gitignore`](https://github.com/agritheory/shipstation-client/blob/master/.gitignore). You don't have to worry about those things.
+
+For building and deployment:
+
+- `GitHub` integration.
+- [`Makefile`](https://github.com/agritheory/shipstation-client/blob/master/Makefile#L89) for building routines. Everything is already set up for security checks, codestyle checks, code formatting, testing, linting, docker builds, etc. More details at [Makefile summary](#makefile-usage)).
+- [Dockerfile](https://github.com/agritheory/shipstation-client/blob/master/docker/Dockerfile) for your package.
+- `Github Actions` with predefined [build workflow](https://github.com/agritheory/shipstation-client/blob/master/.github/workflows/build.yml) as the default CI/CD.
+
+---
+
+### Setup [Poetry](https://python-poetry.org/docs/)
 
 1. Initialize `git` inside your repo:
 
@@ -25,7 +48,7 @@ Awesome `shipstation-client` is a Python cli/package created with https://github
 git init
 ```
 
-2. If you don't have `Poetry` installed run:
+2. If you don't have `Poetry` installed, run:
 
 ```bash
 make download-poetry
@@ -36,94 +59,6 @@ make download-poetry
 ```bash
 make install
 ```
-
-4. Upload initial code to GitHub (ensure you've run `make install` to use `pre-commit`):
-
-```bash
-git add .
-git commit -m ":tada: Initial commit"
-git remote add origin https://github.com/agritheory/shipstation-client.git
-git push -u origin master
-```
-
-### Initial setting up
-
-- Set up [Dependabot](https://github.com/marketplace/dependabot-preview) to ensure you have the latest dependencies.
-- Set up [Stale bot](https://github.com/apps/stale) for automatic issue closing.
-
-### Poetry
-
-All manipulations with dependencies are executed through Poetry. If you're new to it, look through [the documentation](https://python-poetry.org/docs/).
-
-<details>
-<summary>Notes about Poetry</summary>
-<p>
-
-Poetry's [commands](https://python-poetry.org/docs/cli/#commands) are very intuitive and easy to learn, like:
-
-- `poetry add numpy`
-- `poetry run pytest`
-- `poetry build`
-- etc
-
-</p>
-</details>
-
-### Building your package
-
-Building a new version of the application contains steps:
-
-- Bump the version of your package `poetry version <version>`. You can pass the new version explicitly, or a rule such as `major`, `minor`, or `patch`. For more details, refer to the [Semantic Versions](https://semver.org/) standard.
-- Make a commit to `GitHub`.
-- Create a `GitHub release`.
-- And... publish 🙂 `poetry publish --build`
-
-## What's next
-
-Well, that's up to you. I can only recommend the packages and articles that helped me.
-
-Packages:
-
-- [`Typer`](https://github.com/tiangolo/typer) is great for creating CLI applications.
-- [`Rich`](https://github.com/willmcgugan/rich) makes it easy to add beautiful formatting in the terminal.
-- [`FastAPI`](https://github.com/tiangolo/fastapi) is a type-driven asynchronous web framework.
-- [`IceCream`](https://github.com/gruns/icecream) is a little library for sweet and creamy debugging
-
-Articles:
-
-- [Open Source Guides](https://opensource.guide/)
-- [GitHub Actions Documentation](https://help.github.com/en/actions)
-- Maybe you would like to add [gitmoji](https://gitmoji.carloscuesta.me/) to commit names. This is really funny. 😄
-
-## 🚀 Features
-
-For your development we've prepared:
-
-- Supports for `Python 3.7` and higher.
-- [`Poetry`](https://python-poetry.org/) as the dependencies manager. See configuration in [`pyproject.toml`](https://github.com/agritheory/shipstation-client/blob/master/pyproject.toml) and [`setup.cfg`](https://github.com/agritheory/shipstation-client/blob/master/setup.cfg).
-- Power of [`black`](https://github.com/psf/black), [`isort`](https://github.com/timothycrosley/isort) and [`pyupgrade`](https://github.com/asottile/pyupgrade) formatters.
-- Ready-to-use [`pre-commit`](https://pre-commit.com/) hooks with formatters above.
-- Type checks with the configured [`mypy`](https://mypy.readthedocs.io).
-- Testing with [`pytest`](https://docs.pytest.org/en/latest/).
-- Docstring checks with [`darglint`](https://github.com/terrencepreilly/darglint).
-- Security checks with [`safety`](https://github.com/pyupio/safety) and [`bandit`](https://github.com/PyCQA/bandit).
-- Well-made [`.editorconfig`](https://github.com/agritheory/shipstation-client/blob/master/.editorconfig), [`.dockerignore`](https://github.com/agritheory/shipstation-client/blob/master/.dockerignore), and [`.gitignore`](https://github.com/agritheory/shipstation-client/blob/master/.gitignore). You don't have to worry about those things.
-
-For building and deployment:
-
-- `GitHub` integration.
-- [`Makefile`](https://github.com/agritheory/shipstation-client/blob/master/Makefile#L89) for building routines. Everything is already set up for security checks, codestyle checks, code formatting, testing, linting, docker builds, etc. More details at [Makefile summary](#makefile-usage)).
-- [Dockerfile](https://github.com/agritheory/shipstation-client/blob/master/docker/Dockerfile) for your package.
-- `Github Actions` with predefined [build workflow](https://github.com/agritheory/shipstation-client/blob/master/.github/workflows/build.yml) as the default CI/CD.
-- Always up-to-date dependencies with [`@dependabot`](https://dependabot.com/) (You will only [need to setup free plan](https://github.com/marketplace/dependabot-preview)).
-- Automatic drafts of new releases with [`Release Drafter`](https://github.com/marketplace/actions/release-drafter). It creates a list of changes based on labels in merged `Pull Requests`. You can see labels (aka `categories`) in [`release-drafter.yml`](https://github.com/agritheory/shipstation-client/blob/master/.github/release-drafter.yml). Works perfectly with [Semantic Versions](https://semver.org/) specification.
-
-For creating your open source community:
-
-- Ready-to-use [Pull Requests templates](https://github.com/agritheory/shipstation-client/blob/master/.github/PULL_REQUEST_TEMPLATE.md) and several [Issue templates](https://github.com/agritheory/shipstation-client/tree/master/.github/ISSUE_TEMPLATE).
-- Files such as: `LICENSE`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, and `SECURITY.md` are generated automatically.
-- [`Stale bot`](https://github.com/apps/stale) that closes abandoned issues after a period of inactivity. (You will only [need to setup free plan](https://github.com/marketplace/stale)). Configuration is [here](https://github.com/agritheory/shipstation-client/blob/master/.github/.stale.yml).
-- [Semantic Versions](https://semver.org/) specification with [`Release Drafter`](https://github.com/marketplace/actions/release-drafter).
 
 ## Installation
 
@@ -136,6 +71,8 @@ or install with `Poetry`
 ```bash
 poetry add shipstation-client
 ```
+
+## Usage
 
 Then you can run
 
@@ -322,28 +259,6 @@ More information [here](https://github.com/agritheory/shipstation-client/tree/ma
 </p>
 </details>
 
-## 📈 Releases
-
-You can see the list of available releases on the [GitHub Releases](https://github.com/agritheory/shipstation-client/releases) page.
-
-We follow [Semantic Versions](https://semver.org/) specification.
-
-We use [`Release Drafter`](https://github.com/marketplace/actions/release-drafter). As pull requests are merged, a draft release is kept up-to-date listing the changes, ready to publish when you’re ready. With the categories option, you can categorize pull requests in release notes using labels.
-
-For Pull Request this labels are configured, by default:
-
-|               **Label**               |  **Title in Releases**  |
-|:-------------------------------------:|:----------------------:|
-| `enhancement`, `feature`              | 🚀 Features             |
-| `bug`, `refactoring`, `bugfix`, `fix` | 🔧 Fixes & Refactoring  |
-| `build`, `ci`, `testing`              | 📦 Build System & CI/CD |
-| `breaking`                            | 💥 Breaking Changes     |
-| `documentation`                       | 📝 Documentation        |
-| `dependencies`                        | ⬆️ Dependencies updates |
-
-You can update it in [`release-drafter.yml`](https://github.com/agritheory/shipstation-client/blob/master/.github/release-drafter.yml).
-
-GitHub creates the `bug`, `enhancement`, and `documentation` labels for you. Dependabot creates the `dependencies` label. Create the remaining labels on the Issues tab of your GitHub repository, when you need them.
 
 ## 🛡 License
 
@@ -356,8 +271,8 @@ This project is licensed under the terms of the `MIT` license. See [LICENSE](htt
 ```
 @misc{shipstation-client,
   author = {AgriTheory},
-  title = {Awesome `shipstation-client` is a Python cli/package created with https://github.com/TezRomacH/python-package-template},
-  year = {2020},
+  title = {`shipstation-client` is a Python cli/package created with https://github.com/TezRomacH/python-package-template},
+  year = {2024},
   publisher = {GitHub},
   journal = {GitHub repository},
   howpublished = {\url{https://github.com/agritheory/shipstation-client}}

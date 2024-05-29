@@ -88,7 +88,7 @@ endif
 
 .PHONY: download-poetry
 download-poetry:
-	curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+	curl -sSL https://install.python-poetry.org | python3 -
 
 .PHONY: install
 install:
@@ -100,32 +100,43 @@ endif
 
 .PHONY: check-safety
 check-safety:
-	$(POETRY_COMMAND_FLAG)poetry check
+	$(POETRY_COMMAND_FLAG)@echo -e "Checking poetry..."
+	$(POETRY_COMMAND_FLAG)poetry check --quiet
+
+	$(PIP_COMMAND_FLAG)@echo -e "\nChecking pip..."
 	$(PIP_COMMAND_FLAG)pip check
-	$(SAFETY_COMMAND_FLAG)poetry run safety check --full-report
-	$(BANDIT_COMMAND_FLAG)poetry run bandit -ll -r shipstation_client/
+
+	$(BANDIT_COMMAND_FLAG)@echo -e "\nChecking bandit..."
+	$(BANDIT_COMMAND_FLAG)poetry run bandit --silent --severity-level medium --recursive shipstation_client/
+
+	$(SAFETY_COMMAND_FLAG)@echo -e "\nChecking safety..."
+	$(SAFETY_COMMAND_FLAG)poetry run safety --disable-optional-telemetry scan --detailed-output
 
 .PHONY: check-style
 check-style:
+	$(BLACK_COMMAND_FLAG)@echo -e "Checking black..."
 	$(BLACK_COMMAND_FLAG)poetry run black --config pyproject.toml --diff --check ./
-	$(DARGLINT_COMMAND_FLAG)poetry run darglint -v 2 **/*.py
-	$(ISORT_COMMAND_FLAG)poetry run isort --settings-path pyproject.toml --check-only
-	$(MYPY_COMMAND_FLAG)poetry run mypy --config-file setup.cfg tests/
+
+	$(DARGLINT_COMMAND_FLAG)@echo -e "\nChecking darglint..."
+	$(DARGLINT_COMMAND_FLAG)poetry run darglint --verbosity 2 **/*.py
+
+	$(ISORT_COMMAND_FLAG)@echo -e "\nChecking isort..."
+	$(ISORT_COMMAND_FLAG)poetry run isort . --settings-path pyproject.toml --check-only
+
+	$(MYPY_COMMAND_FLAG)@echo -e "\nChecking mypy..."
+	$(MYPY_COMMAND_FLAG)poetry run mypy tests/
 
 .PHONY: codestyle
 codestyle:
 	poetry run pre-commit run --all-files
 
-.PHONY: check-style
-mypy:
-	poetry run mypy --config-file setup.cfg shipstation/
-
 .PHONY: test
 test:
+	@echo -e "Running tests..."
 	poetry run pytest
 
 .PHONY: lint
-lint: test check-safety check-style
+lint: test check-style check-safety
 
 # Example: make docker VERSION=latest
 # Example: make docker IMAGE=some_name VERSION=0.1.0
@@ -133,19 +144,16 @@ lint: test check-safety check-style
 docker:
 	@echo Building docker $(IMAGE):$(VERSION) ...
 	docker build \
-		-t $(IMAGE):$(VERSION) . \
-		-f ./docker/Dockerfile --no-cache
+		--tag $(IMAGE):$(VERSION) . \
+		--file ./docker/Dockerfile \
+		--no-cache
 
 # Example: make clean_docker VERSION=latest
 # Example: make clean_docker IMAGE=some_name VERSION=0.1.0
 .PHONY: clean_docker
 clean_docker:
 	@echo Removing docker $(IMAGE):$(VERSION) ...
-	docker rmi -f $(IMAGE):$(VERSION)
-
-.PHONY: clean_build
-clean:
-	rm -rf build/
+	docker rmi --force $(IMAGE):$(VERSION)
 
 .PHONY: clean
-clean: clean_build clean_docker
+clean: clean_docker

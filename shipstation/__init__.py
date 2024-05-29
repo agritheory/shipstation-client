@@ -7,7 +7,6 @@ ss = ShipStation(key="", secret="", debug=False, timeout="10")
 stores = ss.get_stores()
 """
 
-
 from shipstation.api import ShipStation
 from shipstation.models import *
 from shipstation.pagination import Page

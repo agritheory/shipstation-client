@@ -1,95 +1,109 @@
-import json
-
 import pytest
-import respx
-from httpx import Response
-
-import api_data
+from api_data import *
+from httpx import HTTPStatusError, Response
+from respx import mock
 from shipstation.api import ShipStation
-from shipstation.models import *
 
 
 @pytest.fixture
-def ss() -> ShipStation:
+def ss():
     yield ShipStation(key="123456789", secret="123456789", debug=False, timeout=1)
 
 
 @pytest.fixture(scope="session")
-def mocked_api() -> respx.MockTransport:
-    base_url = "https://ssapi.shipstation.com"
-    with respx.mock(base_url=base_url, assert_all_called=False) as respx_mock:
+def mocked_api():
+    with mock(
+        base_url="https://ssapi.shipstation.com", assert_all_called=False
+    ) as respx_mock:
         respx_mock.get(
             "/carriers/getcarrier?carrierCode=stamps_com",
-            content=api_data.get_carrier,
-            alias="get_carrier",
-        )
+            name="get_carrier",
+        ).respond(200, json=GET_CARRIER)
+
         respx_mock.get(
-            "/customers/123456789", content=api_data.get_customer, alias="get_customer",
+            "/customers/123456789",
+            name="get_customer",
+        ).respond(200, json=GET_CUSTOMER)
+
+        respx_mock.get("/orders/123456789", name="get_order").respond(
+            200, json=GET_ORDER
         )
+        respx_mock.get("/products/123456789", name="get_product").respond(
+            200, json=GET_PRODUCT
+        )
+        respx_mock.post("/shipments/getrates", name="get_rates").respond(
+            200, json=GET_RATES
+        )
+        respx_mock.get("/stores/12345", name="get_store").respond(200, json=GET_STORE)
+
         respx_mock.get(
-            "/orders/123456789", content=api_data.get_order, alias="get_order"
+            "/warehouses/456789",
+            name="get_warehouse",
+        ).respond(200, json=GET_WAREHOUSE)
+
+        respx_mock.get("/carriers", name="list_carriers").respond(
+            200, json=LIST_CARRIERS
         )
-        respx_mock.get(
-            "/products/123456789", content=api_data.get_product, alias="get_product"
+
+        respx_mock.get("/customers", name="list_customers").respond(
+            200, json=LIST_CUSTOMERS
         )
-        respx_mock.post(
-            "/shipments/getrates", content=api_data.get_rates, alias="get_rates"
-        )
-        respx_mock.get("/stores/12345", content=api_data.get_store, alias="get_store")
-        respx_mock.get(
-            "/warehouses/456789", content=api_data.get_warehouse, alias="get_warehouse",
-        )
-        respx_mock.get(
-            "/carriers", content=api_data.list_carriers, alias="list_carriers"
-        )
-        respx_mock.get(
-            "/customers", content=api_data.list_customers, alias="list_customers"
-        )
+
         respx_mock.get(
             "/fulfillments",
-            content=api_data.list_fulfillments,
-            alias="list_fulfillments",
-        )
+            name="list_fulfillments",
+        ).respond(200, json=LIST_FULFILLMENTS)
+
         respx_mock.get(
             "/stores/marketplaces",
-            content=api_data.list_marketplaces,
-            alias="list_marketplaces",
-        )
+            name="list_marketplaces",
+        ).respond(200, json=LIST_MARKETPLACES)
+
         respx_mock.get(
-            "/orders/list", content=api_data.list_orders, alias="list_orders",
-        )
+            "/orders",
+            name="list_orders",
+        ).respond(200, json=LIST_ORDERS)
+
         respx_mock.get(
             "/carriers/listpackages?carrierCode=stamps_com",
-            content=api_data.list_packages,
-            alias="list_packages",
-        )
-        # tested in test_pagination.py
-        # respx_mock.get(
-        #     "/products", content=api_data.list_products, alias="list_products",
-        # )
+            name="list_packages",
+        ).respond(200, json=LIST_PACKAGES)
+
+        # mocking with an exception: https://lundberg.github.io/respx/guide/#exceptions
         respx_mock.get(
-            "/shipments", content=api_data.list_shipments, alias="list_shipments",
+            "/shipments",
+            name="list_shipments",
+        ).mock(
+            side_effect=[
+                Response(200, json=LIST_SHIPMENTS),
+                HTTPStatusError(
+                    message="Not Found",
+                    request=None,
+                    response=Response(404, json={"message": "Not Found"}),
+                ),
+            ]
         )
-        # mocking with an exception: https://lundberg.github.io/respx/guide/#modulo-shortcut
-        respx_mock.get("/shipments", alias="list_shipments_error") % Response(500)
+
         respx_mock.get(
             "/carriers/listservices?carrierCode=stamps_com",
-            content=api_data.list_services,
-            alias="list_services",
-        )
+            name="list_services",
+        ).respond(200, json=LIST_SERVICES)
+
         respx_mock.get(
             "/stores?marketplaceId=2",
-            content=api_data.list_stores,
-            alias="list_stores",
+            name="list_stores",
+        ).respond(200, json=LIST_STORES)
+
+        respx_mock.get("/accounts/listtags", name="list_tags").respond(
+            200, json=LIST_TAGS
         )
-        respx_mock.get(
-            "/accounts/listtags", content=api_data.list_tags, alias="list_tags"
+        respx_mock.get("/users", name="list_users").respond(200, json=LIST_USERS)
+        respx_mock.get("/warehouses", name="list_warehouses").respond(
+            200, json=LIST_WAREHOUSES
         )
-        respx_mock.get("/users", content=api_data.list_users, alias="list_users")
-        respx_mock.get(
-            "/warehouses", content=api_data.list_warehouses, alias="list_warehouses"
-        )
-        # respx_mock.get(
-        #     "/accounts/users", content=api_data.list_webhooks, alias="list_webhooks"
+
+        # respx_mock.get("/accounts/users", name="list_webhooks").respond(
+        #     200, json=LIST_WEBHOOKS
         # )
+
         yield respx_mock

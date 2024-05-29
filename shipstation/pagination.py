@@ -1,29 +1,29 @@
-import typing
+from typing import Any
 
-from attr import attrib, attrs
+from collections.abc import Callable
 from decimal import Decimal
-from functools import partial
-from httpx import Response
 
+from attrs import define
+from httpx import Response
 from shipstation.base import ShipStationBase
 
 
-@attrs(auto_attribs=True)
+@define(auto_attribs=True)
 class Page:
     key: str
     type: type
-    call: typing.Optional[typing.Tuple[typing.Callable, typing.Dict[str, typing.Any]]]
-    results: typing.List[ShipStationBase] = []
-    params: typing.Optional[typing.Dict[str, typing.Any]] = None
+    call: tuple[Callable, dict[str, Any]] | None
+    results: list[ShipStationBase] = []
+    params: dict[str, Any] | None = None
     page: int = 0
     pages: int = 0
     total: int = 0
     _index: int = 0
 
     def __attrs_post_init__(self) -> None:
-        f, args = self.call[0], self.call[1]  # type: ignore
+        f, args = self.call[0], self.call[1]
         if self.params:
-            args = {**self.call[1], "payload": self.params}  # type: ignore
+            args = {**self.call[1], "payload": self.params}
         response = f(**args)
         self.load_results(response)
 
@@ -40,7 +40,7 @@ class Page:
     def __iter__(self) -> "Page":
         return self
 
-    def __next__(self) -> typing.Optional[ShipStationBase]:
+    def __next__(self) -> ShipStationBase | None:
         if not self.results:
             raise StopIteration
         if self.results and self._index == len(self.results):
@@ -52,7 +52,7 @@ class Page:
     def next_page(self) -> "Page":
         if self.page >= self.pages:
             raise StopIteration
-        api_method, args = self.call[0], self.call[1]  # type: ignore
+        api_method, args = self.call[0], self.call[1]
         args["payload"] = {**(self.params or {}), "page": str(self.page + 1)}
         return self.load_results(api_method(**args))
 

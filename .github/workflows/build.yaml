@@ -1,0 +1,37 @@
+name: build
+
+on: [pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install poetry
+      run: make download-poetry
+
+    - name: Set up cache
+      uses: actions/cache@v4
+      with:
+        path: .venv
+        key: venv-${{ hashFiles('pyproject.toml') }}-${{ hashFiles('poetry.lock') }}
+
+    - name: Install dependencies
+      run: |
+        poetry config virtualenvs.in-project true
+        poetry install
+
+    - name: Run style checks
+      run: |
+        make codestyle
+        make check-style
+
+    - name: Run safety checks
+      run: make check-safety

@@ -43,5 +43,3 @@ like in installation, you can also choose the image name
 ```bash
 make clean_docker IMAGE=some_name VERSION=latest
 ```
-
-If you want to clean all, including `build` run `make clean`
