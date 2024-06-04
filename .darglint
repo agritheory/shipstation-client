@@ -1,3 +1,0 @@
-[darglint]
-docstring_style=sphinx
-ignore=DAR003,DAR201

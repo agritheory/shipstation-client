@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "shipstation-client"
-version = "0.1.0"
-description = 'Python bindings for the ShipStation API'
+version = "0.0.0"
+description = "Python bindings for the ShipStation API"
 license = "MIT"
 authors = ["AgriTheory <hello@agritheory.com>"]
 readme = "README.md"
 homepage = "https://github.com/agritheory/shipstation-client"
 repository = "https://github.com/agritheory/shipstation-client"
-keywords = ['shipstation', 'client', 'api', 'python', 'orders', 'shipments']
+keywords = ["shipstation", "client", "api", "python", "orders", "shipments"]
 packages = [{ include = "shipstation" }]
 classifiers = [
   "Development Status :: 4 - Beta",
@@ -40,34 +40,32 @@ python-dateutil = "^2.8.1"
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.7.8"
 black = "^24.4.2"
-darglint = "^1.8.1"
 isort = "^5.13.2"
 mypy = "^1.10.0"
 pre-commit = "^3.7.1"
-pydocstyle = "^5.0.2"
 pytest = "^8.2.1"
-pytest-asyncio = "^0.23.7"
 pytest-cov = "^5.0.0"
 pytest-httpx = "^0.30.0"
-pytest-mypy = "^0.10.3"
-python-dotenv = "^0.13.0"
 pyupgrade = "^3.15.2"
 respx = "^0.21.1"
-safety = "^3.2.0"
 
 [tool.pytest.ini_options]
 addopts = "--cov=shipstation --cov-report term"
 
 [tool.black]
-line-length = 88
 target-version = ["py310"]
 
 [tool.isort]
 default_section = "FIRSTPARTY"
-force_grid_wrap = 0
 include_trailing_comma = true
 known_typing = "typing,types,typing_extensions,mypy,mypy_extensions"
-line_length = 80
 multi_line_output = 3
+profile = "black"
 sections = "TYPING,STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
 use_parentheses = true
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:tool.poetry.version"]
+
+[tool.semantic_release.branches.version]
+match = "(main|master)"

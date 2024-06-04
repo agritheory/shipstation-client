@@ -1,10 +1,10 @@
-name: Build
+name: Pre-commit
 
 on:
   pull_request:
 
 jobs:
-  build:
+  pre-commit:
     runs-on: ubuntu-latest
     steps:
       - name: Clone
@@ -29,10 +29,7 @@ jobs:
           poetry config virtualenvs.in-project true
           poetry install
 
-      - name: Run style checks
-        run: |
-          make codestyle
-          make check-style
-
-      - name: Run safety checks
-        run: make check-safety
+      - name: Run pre-commit
+        uses: pre-commit/action@v3.0.0
+        with:
+          extra_args: '--verbose --all-files'
