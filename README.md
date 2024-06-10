@@ -27,8 +27,7 @@ For your development we've prepared:
 - Ready-to-use [`pre-commit`](https://pre-commit.com/) hooks with formatters above.
 - Type checks with the configured [`mypy`](https://mypy.readthedocs.io).
 - Testing with [`pytest`](https://docs.pytest.org/en/latest/).
-- Docstring checks with [`darglint`](https://github.com/terrencepreilly/darglint).
-- Security checks with [`safety`](https://github.com/pyupio/safety) and [`bandit`](https://github.com/PyCQA/bandit).
+- Security checks with [`bandit`](https://github.com/PyCQA/bandit).
 - Well-made [`.editorconfig`](https://github.com/agritheory/shipstation-client/blob/master/.editorconfig) and [`.gitignore`](https://github.com/agritheory/shipstation-client/blob/master/.gitignore). You don't have to worry about those things.
 
 For building and deployment:
@@ -134,25 +133,13 @@ make install NO_PRE_COMMIT=1
 make check-safety
 ```
 
-This command launches a `Poetry` and `Pip` integrity check as well as identifies security issues with `Safety` and `Bandit`. By default, the build will not crash if any of the items fail. But you can set `STRICT=1` for the entire build, or you can configure strictness for each item separately.
+This command launches a `Poetry` and `Pip` integrity check as well as identifies security issues with `Bandit`. By default, the build will not crash if any of the items fail. But you can set `STRICT=1` for the entire build, or you can configure strictness for each item separately.
 
 ```bash
 make check-safety STRICT=1
 ```
 
-or only for `safety`:
-
-```bash
-make check-safety SAFETY_STRICT=1
-```
-
-multiple
-
-```bash
-make check-safety PIP_STRICT=1 SAFETY_STRICT=1
-```
-
-> List of flags for `check-safety` (can be set to `1` or `0`): `STRICT`, `POETRY_STRICT`, `PIP_STRICT`, `SAFETY_STRICT`, `BANDIT_STRICT`.
+> List of flags for `check-safety` (can be set to `1` or `0`): `STRICT`, `POETRY_STRICT`, `PIP_STRICT`, `BANDIT_STRICT`.
 
 </p>
 </details>
@@ -161,7 +148,7 @@ make check-safety PIP_STRICT=1 SAFETY_STRICT=1
 <summary>4. Check the codestyle</summary>
 <p>
 
-The command is similar to `check-safety` but to check the code style, obviously. It uses `Black`, `Darglint`, `Isort`, and `Mypy` inside.
+The command is similar to `check-safety` but to check the code style, obviously. It uses `Black`, `Isort`, and `Mypy` inside.
 
 ```bash
 make check-style
@@ -173,7 +160,7 @@ It may also contain the `STRICT` flag.
 make check-style STRICT=1
 ```
 
-> List of flags for `check-style` (can be set to `1` or `0`): `STRICT`, `BLACK_STRICT`, `DARGLINT_STRICT`, `ISORT_STRICT`, `MYPY_STRICT`.
+> List of flags for `check-style` (can be set to `1` or `0`): `STRICT`, `BLACK_STRICT`, `ISORT_STRICT`, `MYPY_STRICT`.
 
 </p>
 </details>
@@ -216,7 +203,7 @@ the same as:
 make test && make check-safety && make check-style
 ```
 
-> List of flags for `lint` (can be set to `1` or `0`): `STRICT`, `POETRY_STRICT`, `PIP_STRICT`, `SAFETY_STRICT`, `BANDIT_STRICT`, `BLACK_STRICT`, `DARGLINT_STRICT`, `ISORT_STRICT`, `MYPY_STRICT`.
+> List of flags for `lint` (can be set to `1` or `0`): `STRICT`, `POETRY_STRICT`, `PIP_STRICT`, `BANDIT_STRICT`, `BLACK_STRICT`, `ISORT_STRICT`, `MYPY_STRICT`.
 
 </p>
 </details>

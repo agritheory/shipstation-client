@@ -1,0 +1,56 @@
+name: Release Shipstation Client
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release:
+    name: Semantic Release
+    runs-on: ubuntu-latest
+
+    environment:
+      name: pypi
+      url: https://pypi.org/p/shipstation-client
+
+    concurrency: release
+    permissions:
+      id-token: write
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Python Semantic Release
+        id: release
+        uses: python-semantic-release/python-semantic-release@master # keep version in sync
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          git_committer_name: AgriTheory
+          git_committer_email: support@agritheory.dev
+
+      - name: Build and Inspect Package (Upload Artifacts)
+        uses: hynek/build-and-inspect-python-package@v2
+        if: ${{ steps.release.outputs.released }} == 'true'
+        id: build
+
+      - name: Build and Inspect Package (Download Artifacts)
+        uses: actions/download-artifact@v4
+        if: ${{ steps.release.outputs.released }} == 'true'
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          path: dist
+
+      - name: Publish package to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        if: ${{ steps.release.outputs.released }} == 'true'
+
+      - name: Publish package to GitHub Release
+        uses: python-semantic-release/upload-to-gh-release@main # keep version in sync
+        if: ${{ steps.release.outputs.released }} == 'true'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.release.outputs.tag }}

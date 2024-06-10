@@ -11,5 +11,4 @@ from shipstation.api import ShipStation
 from shipstation.models import *
 from shipstation.pagination import Page
 
-__version__ = "0.1.0"
 __author__ = "Tyler Matteson"
