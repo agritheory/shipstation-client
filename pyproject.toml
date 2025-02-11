@@ -31,7 +31,7 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.13"
+python = ">=3.10,<3.14"
 attrs = "^23.2.0"
 cattrs = "^23.2.3"
 httpx = "^0.27.0"
@@ -59,15 +59,65 @@ safety = "^3.2.0"
 addopts = "--cov=shipstation --cov-report term"
 
 [tool.black]
-line-length = 88
-target-version = ["py310"]
+line-length = 99
 
 [tool.isort]
-default_section = "FIRSTPARTY"
-force_grid_wrap = 0
-include_trailing_comma = true
-known_typing = "typing,types,typing_extensions,mypy,mypy_extensions"
-line_length = 80
+line_length = 99
 multi_line_output = 3
-sections = "TYPING,STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
+include_trailing_comma = true
+force_grid_wrap = 0
 use_parentheses = true
+ensure_newline_before_comments = true
+indent = "\t"
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+min_version = 4
+requires =
+    tox-gh-actions>=3
+envlist = py310, py311, py312, linting
+[gh-actions]
+python =
+    3.10: py310
+    3.11: py311
+    3.12: py312, linting
+[testenv]
+skip_install = true
+allowlist_externals = poetry
+commands_pre =
+    poetry install
+[testenv:linting]
+description = run linters
+commands_pre =
+    poetry install
+    python -m pip install flake8
+    python -m pip install mypy
+    python -m pip install black git+https://github.com/agritheory/black.git
+    mypy ./ --install-types --non-interactive
+commands =
+    flake8 ./shipstation
+    mypy ./shipstation --ignore-missing-imports
+    black --check .
+[testenv:py310]
+description = run pytest on 3.10
+commands =
+    pytest tests/ --disable-warnings -s
+[testenv:py311]
+description = run pytest on 3.11
+commands =
+    pytest tests/ --disable-warnings -s
+[testenv:py312]
+description = run pytest and coverage on 3.12
+commands =
+    pytest tests/ --cov=shipstation --cov-report=xml --disable-warnings -s
+"""
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:tool.poetry.version"]
+version_variable = [
+    "shipstation/__init__.py:__version__"
+]
+
+[tool.semantic_release.branches.version]
+match = "master"

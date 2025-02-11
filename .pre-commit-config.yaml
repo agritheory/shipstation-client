@@ -1,36 +1,67 @@
-default_language_version:
-  python: python3.10
-
-default_stages: [commit, push]
+exclude: 'node_modules|.git'
+default_stages: [pre-commit]
+fail_fast: false
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.5.0
+    rev: v5.0.0
     hooks:
+      - id: trailing-whitespace
+        files: 'forecast.*'
+        exclude: '.*json$|.*txt$|.*csv|.*md|.*svg'
+      - id: no-commit-to-branch
+        args: ['--branch', 'develop']
+      - id: check-merge-conflict
+      - id: check-ast
+      - id: check-json
+      - id: check-toml
       - id: check-yaml
-        exclude: ^.github/
-      - id: end-of-file-fixer
+      - id: debug-statements
 
-  - repo: local
-    hooks:
-      - id: isort
-        name: isort
-        entry: poetry run isort --settings-path pyproject.toml
-        types: [python]
-        language: system
-
-  - repo: local
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.19.1
     hooks:
       - id: pyupgrade
-        name: pyupgrade
-        entry: poetry run pyupgrade --py310-plus
-        types: [python]
-        language: system
+        args: ['--py310-plus']
 
-  - repo: local
+  - repo: https://github.com/agritheory/black
+    rev: 951ccf4d5bb0d692b457a5ebc4215d755618eb68
     hooks:
       - id: black
-        name: black
-        entry: poetry run black --config pyproject.toml
-        types: [python]
-        language: system
+        args: ['--line-length', '99']
+
+  - repo: https://github.com/PyCQA/isort
+    rev: 6.0.0
+    hooks:
+      - id: isort
+
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.1.1
+    hooks:
+      - id: flake8
+        additional_dependencies: ['flake8-bugbear']
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.1
+    hooks:
+      - id: codespell
+        args: ['--skip', 'poetry.lock', '--']
+        additional_dependencies:
+          - tomli
+
+  - repo: https://github.com/agritheory/test_utils
+    rev: v0.17.0
+    hooks:
+      - id: update_pre_commit_config
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.15.0
+    hooks:
+      - id: mypy
+        exclude: ^tests/
+        args: ['--install-types', '--non-interactive', '--ignore-missing-imports']
+
+ci:
+  autoupdate_schedule: weekly
+  skip: []
+  submodules: false
