@@ -54,6 +54,7 @@ python-dotenv = "^0.13.0"
 pyupgrade = "^3.15.2"
 respx = "^0.21.1"
 safety = "^3.2.0"
+typing-extensions = "^4.12.2"
 
 [tool.pytest.ini_options]
 addopts = "--cov=shipstation --cov-report term"

@@ -12,7 +12,7 @@ from shipstation.base import ShipStationBase
 class Page:
 	key: str
 	type: type
-	call: tuple[Callable, dict[str, Any]] | None
+	call: tuple[Callable, dict[str, Any]]
 	results: list[ShipStationBase] = []
 	params: dict[str, Any] | None = None
 	page: int = 0

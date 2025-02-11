@@ -29,7 +29,7 @@ class ShipStation(ShipStationHTTP):
 		return [ShipStationOrderTag().json(tag) for tag in tags.json(parse_float=Decimal)]
 
 	# CARRIERS
-	def get_carrier(self, carrier_code: str) -> ShipStationCarrier:
+	def get_carrier(self, carrier_code: str) -> str | ShipStationCarrier:
 		"""
 		Retrieves the shipping carrier account details for the specified carrierCode.
 		Use this method to determine a carrier's account balance.
@@ -108,10 +108,12 @@ class ShipStation(ShipStationHTTP):
 			parameters = {}
 		valid_parameters = self._validate_parameters(parameters, CUSTOMER_LIST_PARAMETERS)
 		return Page(
-			type=ShipStationCustomer,
-			key="customers",
-			params=valid_parameters,
-			call=(self.get, {"endpoint": "/customers"}),
+			**{
+				"type": ShipStationCustomer,
+				"key": "customers",
+				"params": valid_parameters,
+				"call": (self.get, {"endpoint": "/customers"}),
+			}
 		)
 
 	# FULFILLMENTS
@@ -129,10 +131,12 @@ class ShipStation(ShipStationHTTP):
 			parameters = {}
 		valid_parameters = self._validate_parameters(parameters, FULFILLMENT_LIST_PARAMETERS)
 		return Page(
-			type=ShipStationFulfillment,
-			key="fulfillments",
-			params=valid_parameters,
-			call=(self.get, {"endpoint": "/fulfillments"}),
+			**{
+				"type": ShipStationFulfillment,
+				"key": "fulfillments",
+				"params": valid_parameters,
+				"call": (self.get, {"endpoint": "/fulfillments"}),
+			}
 		)
 
 	# ORDERS
@@ -192,7 +196,7 @@ class ShipStation(ShipStationHTTP):
 			return r.json()
 		new_data = self.convert_camel_case(r.json())
 		if pdf:
-			return BytesIO(base64.b64decode(new_data["label_data"]))
+			return BytesIO(base64.b64decode(new_data["label_data"]))  # type: ignore
 		if isinstance(new_data, dict):
 			for key, value in new_data.items():
 				if value:
@@ -229,7 +233,7 @@ class ShipStation(ShipStationHTTP):
 			responses.append(ShipStationOrder().json(r.json(parse_float=Decimal)))
 		return responses
 
-	def create_order(self, order: ShipStationOrder) -> ShipStationOrder:
+	def create_order(self, order: ShipStationOrder) -> str | ShipStationOrder:
 		"""
 		You can use this method to create a new order or update an existing order.
 		If the `orderKey` is specified, ShipStation will attempt to locate the order with the
@@ -315,10 +319,12 @@ class ShipStation(ShipStationHTTP):
 			parameters = {}
 		valid_parameters = self._validate_parameters(parameters, ORDER_LIST_BY_TAG_PARAMETERS)
 		return Page(
-			type=ShipStationOrder,
-			key="orders",
-			params=valid_parameters,
-			call=(self.get, {"endpoint": "/orders/listbytag"}),
+			**{
+				"type": ShipStationOrder,
+				"key": "orders",
+				"params": valid_parameters,
+				"call": (self.get, {"endpoint": "/orders/listbytag"}),
+			}
 		)
 
 	def list_orders(self, parameters: dict[str, Any] | None = None) -> Page:
@@ -336,10 +342,12 @@ class ShipStation(ShipStationHTTP):
 		self.require_type(parameters, dict)
 		valid_parameters = self._validate_parameters(parameters, ORDER_LIST_PARAMETERS)
 		return Page(
-			type=ShipStationOrder,
-			key="orders",
-			params=valid_parameters,
-			call=(self.get, {"endpoint": "/orders"}),
+			**{
+				"type": ShipStationOrder,
+				"key": "orders",
+				"params": valid_parameters,
+				"call": (self.get, {"endpoint": "/orders"}),
+			}
 		)
 
 	def mark_order_as_shipped(
@@ -453,10 +461,12 @@ class ShipStation(ShipStationHTTP):
 			parameters = {}
 		valid_parameters = self._validate_parameters(parameters, PRODUCT_LIST_PARAMETERS)
 		return Page(
-			type=ShipStationItem,
-			key="products",
-			params=valid_parameters,
-			call=(self.get, {"endpoint": "/products"}),
+			**{
+				"type": ShipStationItem,
+				"key": "products",
+				"params": valid_parameters,
+				"call": (self.get, {"endpoint": "/products"}),
+			}
 		)
 
 	def update_product(self, product: ShipStationItem) -> Any:
@@ -519,10 +529,12 @@ class ShipStation(ShipStationHTTP):
 			parameters = {}
 		valid_parameters = self._validate_parameters(parameters, SHIPMENT_LIST_PARAMETERS)
 		return Page(
-			type=ShipStationOrder,
-			key="shipments",
-			params=valid_parameters,
-			call=(self.get, {"endpoint": "/shipments"}),
+			**{
+				"type": ShipStationOrder,
+				"key": "shipments",
+				"params": valid_parameters,
+				"call": (self.get, {"endpoint": "/shipments"}),
+			}
 		)
 
 	def void_label(self, shipment_id: str) -> Any:
@@ -593,7 +605,7 @@ class ShipStation(ShipStationHTTP):
 			parameters["showInactive"] = show_inactive
 		if marketplace_id:
 			self.require_type(marketplace_id, int)
-			parameters["marketplaceId"] = marketplace_id
+			parameters["marketplaceId"] = marketplace_id  # type: ignore
 		stores = self.get(endpoint="/stores", payload=parameters)
 		return [ShipStationStore().json(s) for s in stores.json(parse_float=Decimal) if s]
 
@@ -610,7 +622,7 @@ class ShipStation(ShipStationHTTP):
 		for m in UPDATE_STORE_OPTIONS:
 			self.require_attribute(m)
 		self.require_type(parameters.get("status_mappings"), list)
-		for mapping in parameters.get("status_mappings"):
+		for mapping in parameters.get("status_mappings"):  # type: ignore
 			self.require_type(mapping, ShipStationStatusMapping)
 			self.require_membership(mapping["orderStatus"], ORDER_STATUS_VALUES)
 		store = self.put(endpoint="/stores/storeId", data=parameters)
@@ -722,7 +734,7 @@ class ShipStation(ShipStationHTTP):
 
 		r = self.get(endpoint="/webhooks")
 		webhooks = r.json(parse_float=Decimal).get("webhooks") if r.status_code == 200 else None
-		return [ShipStationWebhook().json(w) for w in webhooks if w]
+		return [ShipStationWebhook().json(w) for w in webhooks if w] if webhooks else []
 
 	# return same webhook object with new webhook id
 	def subscribe_to_webhook(self, webhook: ShipStationWebhook) -> ShipStationWebhook:

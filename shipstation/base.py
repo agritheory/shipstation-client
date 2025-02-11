@@ -3,11 +3,12 @@ import re
 from collections.abc import Iterable
 from datetime import date, datetime
 from decimal import Decimal
-from typing import Any, Union
+from typing import Any
 from uuid import UUID
 
 from cattrs import Converter
 from dateutil.parser import parse
+from typing_extensions import Self
 
 snake_case_regex = re.compile("([a-z0-9])([A-Z])")
 
@@ -74,14 +75,14 @@ class ShipStationBase:
 			raise AttributeError(f"'{value}' is not one of {other}")
 
 	def _validate_parameters(
-		self, parameters: dict[str, Any], valid_parameters: tuple[str]
+		self, parameters: dict[str, Any], valid_parameters: tuple[str, ...]
 	) -> dict[str, Any]:
 		invalid_keys = set(parameters.keys()).difference(valid_parameters)
 		if invalid_keys:
 			raise AttributeError("Invalid order list parameters: {}".format(", ".join(invalid_keys)))
 		return {self.to_camel_case(key): value for key, value in parameters.items()}
 
-	def json(self, json_str: None | str | dict[str, Any] = None) -> Union[str, "ShipStationBase"]:
+	def json(self, json_str: None | str | dict[str, Any] = None) -> str | Self:
 		if not json_str:
 			return json.dumps(self.convert_snake_case(self._unstructure()))
 		if isinstance(json_str, dict):
