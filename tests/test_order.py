@@ -2,169 +2,168 @@ import datetime
 
 import pytest
 from respx import MockRouter, mock
+
 from shipstation.api import ShipStation
 from shipstation.models import *
 
 
 @pytest.fixture(scope="session")
 def mocked_order_creation():
-    with mock(
-        base_url="https://ssapi.shipstation.com", assert_all_called=False
-    ) as respx_mock:
-        respx_mock.post("/orders/createorder", name="test_order_creation").respond(
-            200, json=ORDER_CREATION
-        )
-        yield respx_mock
+	with mock(base_url="https://ssapi.shipstation.com", assert_all_called=False) as respx_mock:
+		respx_mock.post("/orders/createorder", name="test_order_creation").respond(
+			200, json=ORDER_CREATION
+		)
+		yield respx_mock
 
 
 @pytest.fixture(scope="session")
 def mock_order() -> ShipStationOrder:
-    return ShipStationOrder(
-        order_number="SI-08557",
-        order_date=datetime.datetime(2020, 9, 28, 0, 0),
-        order_status="awaiting_shipment",
-        bill_to=ShipStationAddress(
-            name="Random Customer",
-            company=None,
-            street1="Random Customer",
-            street2="1600 Pennsylvania Avenue NW",
-            street3=None,
-            city="WASHINGTON",
-            state="DC",
-            postal_code="20500",
-            country=None,
-            phone="",
-            address_verified="Address validated successfully",
-        ),
-        ship_to=ShipStationAddress(
-            name="Random Customer",
-            company=None,
-            street1="Random Customer",
-            street2="1600 Pennsylvania Avenue NW",
-            street3=None,
-            city="WASHINGTON",
-            state="DC",
-            postal_code="20500",
-            country=None,
-            phone="",
-            address_verified="Address validated successfully",
-        ),
-        carrier_code="ups_walleted",
-        service_code="ups_ground",
-        package_code="package",
-        confirmation=None,
-        ship_date=datetime.datetime(2020, 9, 28, 0, 0),
-    )
+	return ShipStationOrder(
+		order_number="SI-08557",
+		order_date=datetime.datetime(2020, 9, 28, 0, 0),
+		order_status="awaiting_shipment",
+		bill_to=ShipStationAddress(
+			name="Random Customer",
+			company=None,
+			street1="Random Customer",
+			street2="1600 Pennsylvania Avenue NW",
+			street3=None,
+			city="WASHINGTON",
+			state="DC",
+			postal_code="20500",
+			country=None,
+			phone="",
+			address_verified="Address validated successfully",
+		),
+		ship_to=ShipStationAddress(
+			name="Random Customer",
+			company=None,
+			street1="Random Customer",
+			street2="1600 Pennsylvania Avenue NW",
+			street3=None,
+			city="WASHINGTON",
+			state="DC",
+			postal_code="20500",
+			country=None,
+			phone="",
+			address_verified="Address validated successfully",
+		),
+		carrier_code="ups_walleted",
+		service_code="ups_ground",
+		package_code="package",
+		confirmation=None,
+		ship_date=datetime.datetime(2020, 9, 28, 0, 0),
+	)
 
 
 @mock
 def test_create_order(
-    ss: ShipStation,
-    mocked_order_creation: MockRouter,
-    mock_order: ShipStationOrder,
+	ss: ShipStation,
+	mocked_order_creation: MockRouter,
+	mock_order: ShipStationOrder,
 ) -> None:
-    request = mocked_order_creation["test_order_creation"]
-    response = ss.create_order(mock_order)
-    assert isinstance(response, ShipStationOrder)
-    assert isinstance(response.bill_to, ShipStationAddress)
-    assert isinstance(response.ship_to, ShipStationAddress)
-    assert isinstance(response.ship_date, datetime.datetime)
+	request = mocked_order_creation["test_order_creation"]
+	response = ss.create_order(mock_order)
+	assert isinstance(response, ShipStationOrder)
+	assert isinstance(response.bill_to, ShipStationAddress)
+	assert isinstance(response.ship_to, ShipStationAddress)
+	assert isinstance(response.ship_date, datetime.datetime)
 
 
 ORDER_CREATION = {
-    "advancedOptions": {
-        "billToAccount": None,
-        "billToCountryCode": None,
-        "billToMyOtherAccount": None,
-        "billToParty": None,
-        "billToPostalCode": None,
-        "containsAlcohol": False,
-        "customField1": None,
-        "customField2": None,
-        "customField3": None,
-        "mergedIds": [],
-        "mergedOrSplit": False,
-        "nonMachinable": False,
-        "parentId": None,
-        "saturdayDelivery": False,
-        "source": None,
-        "storeId": 176145,
-        "warehouseId": 241631,
-    },
-    "amountPaid": 0.0,
-    "billTo": {
-        "addressVerified": None,
-        "city": "WASHINGTON",
-        "company": None,
-        "country": None,
-        "name": "Random Customer",
-        "phone": None,
-        "postalCode": "20500",
-        "residential": None,
-        "state": "DC",
-        "street1": "Random Customer",
-        "street2": "1600 Pennsylvania Avenue NW",
-        "street3": None,
-    },
-    "carrierCode": "ups_walleted",
-    "confirmation": "none",
-    "createDate": "2020-10-21T11:47:05.7430000",
-    "customerEmail": None,
-    "customerId": None,
-    "customerNotes": None,
-    "customerUsername": None,
-    "dimensions": None,
-    "externallyFulfilled": False,
-    "externallyFulfilledBy": None,
-    "gift": False,
-    "giftMessage": None,
-    "holdUntilDate": None,
-    "insuranceOptions": {
-        "insureShipment": False,
-        "insuredValue": 0.0,
-        "provider": None,
-    },
-    "internalNotes": None,
-    "internationalOptions": {
-        "contents": None,
-        "customsItems": None,
-        "nonDelivery": None,
-    },
-    "items": [],
-    "labelMessages": None,
-    "modifyDate": "2020-10-21T11:47:05.6800000",
-    "orderDate": "2020-09-28T00:00:00.0000000",
-    "orderId": 143862300,
-    "orderKey": "4c8cfb59e6df4872807e6b83bd98e566",
-    "orderNumber": "SI-08557",
-    "orderStatus": "awaiting_shipment",
-    "orderTotal": 0.0,
-    "packageCode": "package",
-    "paymentDate": None,
-    "paymentMethod": None,
-    "requestedShippingService": None,
-    "serviceCode": "ups_ground",
-    "shipByDate": None,
-    "shipDate": "2020-09-28",
-    "shipTo": {
-        "addressVerified": "Address validation warning",
-        "city": "WASHINGTON",
-        "company": None,
-        "country": "US",
-        "name": "Random Customer",
-        "phone": None,
-        "postalCode": "20500-0003",
-        "residential": False,
-        "state": "DC",
-        "street1": "1600 PENNSYLVANIA AVE NW",
-        "street2": "RANDOM CUSTOMER",
-        "street3": None,
-    },
-    "shippingAmount": 0.0,
-    "tagIds": None,
-    "taxAmount": 0.0,
-    "userId": None,
-    "weight": {"WeightUnits": 1, "units": "ounces", "value": 0.0},
+	"advancedOptions": {
+		"billToAccount": None,
+		"billToCountryCode": None,
+		"billToMyOtherAccount": None,
+		"billToParty": None,
+		"billToPostalCode": None,
+		"containsAlcohol": False,
+		"customField1": None,
+		"customField2": None,
+		"customField3": None,
+		"mergedIds": [],
+		"mergedOrSplit": False,
+		"nonMachinable": False,
+		"parentId": None,
+		"saturdayDelivery": False,
+		"source": None,
+		"storeId": 176145,
+		"warehouseId": 241631,
+	},
+	"amountPaid": 0.0,
+	"billTo": {
+		"addressVerified": None,
+		"city": "WASHINGTON",
+		"company": None,
+		"country": None,
+		"name": "Random Customer",
+		"phone": None,
+		"postalCode": "20500",
+		"residential": None,
+		"state": "DC",
+		"street1": "Random Customer",
+		"street2": "1600 Pennsylvania Avenue NW",
+		"street3": None,
+	},
+	"carrierCode": "ups_walleted",
+	"confirmation": "none",
+	"createDate": "2020-10-21T11:47:05.7430000",
+	"customerEmail": None,
+	"customerId": None,
+	"customerNotes": None,
+	"customerUsername": None,
+	"dimensions": None,
+	"externallyFulfilled": False,
+	"externallyFulfilledBy": None,
+	"gift": False,
+	"giftMessage": None,
+	"holdUntilDate": None,
+	"insuranceOptions": {
+		"insureShipment": False,
+		"insuredValue": 0.0,
+		"provider": None,
+	},
+	"internalNotes": None,
+	"internationalOptions": {
+		"contents": None,
+		"customsItems": None,
+		"nonDelivery": None,
+	},
+	"items": [],
+	"labelMessages": None,
+	"modifyDate": "2020-10-21T11:47:05.6800000",
+	"orderDate": "2020-09-28T00:00:00.0000000",
+	"orderId": 143862300,
+	"orderKey": "4c8cfb59e6df4872807e6b83bd98e566",
+	"orderNumber": "SI-08557",
+	"orderStatus": "awaiting_shipment",
+	"orderTotal": 0.0,
+	"packageCode": "package",
+	"paymentDate": None,
+	"paymentMethod": None,
+	"requestedShippingService": None,
+	"serviceCode": "ups_ground",
+	"shipByDate": None,
+	"shipDate": "2020-09-28",
+	"shipTo": {
+		"addressVerified": "Address validation warning",
+		"city": "WASHINGTON",
+		"company": None,
+		"country": "US",
+		"name": "Random Customer",
+		"phone": None,
+		"postalCode": "20500-0003",
+		"residential": False,
+		"state": "DC",
+		"street1": "1600 PENNSYLVANIA AVE NW",
+		"street2": "RANDOM CUSTOMER",
+		"street3": None,
+	},
+	"shippingAmount": 0.0,
+	"tagIds": None,
+	"taxAmount": 0.0,
+	"userId": None,
+	"weight": {"WeightUnits": 1, "units": "ounces", "value": 0.0},
 }
 
 

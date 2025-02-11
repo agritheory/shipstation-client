@@ -179,7 +179,7 @@ make check-style STRICT=1
 </details>
 
 <details>
-<summary>5. Run all the codestyle formaters</summary>
+<summary>5. Run all the codestyle formatters</summary>
 <p>
 
 Codestyle uses `pre-commit` hooks, so ensure you've run `make install` before.
